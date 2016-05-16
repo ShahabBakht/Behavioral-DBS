@@ -109,7 +109,7 @@ for blcount = 1:size(Xspem,1)
     close;
     
 end
-
+Xsorted(1,:,:) = Xspem;
 
 %% Detect the initiations and calculate velocity 
 RunOnSorted = true;
