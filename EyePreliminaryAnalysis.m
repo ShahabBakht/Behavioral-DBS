@@ -1,5 +1,11 @@
 function Results = EyePreliminaryAnalysis(I)
 
+%% What to do
+
+DetectSPEMinit = false;
+DetectVGS = false;
+CalculateVelocity = true;
+DesaccadeVelocity = true;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -83,7 +89,29 @@ end
 title('Visually Guided Saccades');xlabel('time (ms)');grid minor
 ylim([-15,15]);
 
-%% Detect the initiations
+
+
+%% Fill the blinks
+Xspem = squeeze(Xsorted(1,:,:));
+% Tspem = nan(size(Xspem,1),size(Xspem,2));
+% Trialspem = squeeze(TrialSubType(1,:,:));
+
+for blcount = 1:size(Xspem,1)
+    figure('units','normalized','outerposition',[0 0 1 1])
+    for trcount = 1:size(Xspem,2)
+        plot(Xspem{blcount,trcount});
+        title(num2str(trcount));
+        [x, y] = getpts;
+        for blinkcount = 1:2:length(x)
+            Xspem{blcount,trcount}(x(blinkcount):x(blinkcount+1)) = ((y(blinkcount+1) - y(blinkcount) )./(x(blinkcount+1) - x(blinkcount))) * (0:x(blinkcount+1)-x(blinkcount)) + y(blinkcount);
+        end
+    end
+    close;
+    
+end
+
+
+%% Detect the initiations and calculate velocity 
 RunOnSorted = true;
 % warning('off')
 SampleRate = 0.001;
@@ -92,9 +120,8 @@ if RunOnSorted
     Tspem = nan(size(Xspem,1),size(Xspem,2));
     Trialspem = squeeze(TrialSubType(1,:,:));
     
-    % select bad trials of smooth pursuit
     for blcount = 1:size(Xspem,1)
-         figure('units','normalized','outerposition',[0 0 1 1])
+        figure('units','normalized','outerposition',[0 0 1 1])
         for trcount = 1:size(Xspem,2)
             subplot(ceil(sqrt(size(Xspem,2))),ceil(sqrt(size(Xspem,2))),trcount);plot(Xspem{blcount,trcount});
             title(num2str(trcount));
@@ -102,66 +129,125 @@ if RunOnSorted
         BadTrials = inputdlg('Which trials are bad?');
         TrialsToRemove{blcount} = str2num(BadTrials{1});
     end
-    %
-    for blcount = 1:size(Xspem,1)
-        for trcount = 1:size(Xspem,2)
-            BadTrials = TrialsToRemove{blcount};
-            if sum(BadTrials == trcount) == 0
-                x_spem = Xspem{blcount,trcount};
-                
-                [b,a] = butter(6,100*2*SampleRate);
-                xfit = filtfilt(b,a,x_spem);
-                v_spem = gradient(xfit,SampleRate); % calculate v and a
-                Vspem{blcount,trcount} = v_spem;
-                trial_subtype = Trialspem(blcount,trcount);
-                try
-                    t = DetectSPEMinit(v_spem,trial_subtype);
-                    Tspem(blcount,trcount) = t;
-                catch
+    
+    if CalculateVelocity
+        
+        for blcount = 1:size(Xspem,1)
+            for trcount = 1:size(Xspem,2)
+                BadTrials = TrialsToRemove{blcount};
+                if sum(BadTrials == trcount) == 0
+                    x_spem = Xspem{blcount,trcount};
                     
+                    [b,a] = butter(6,100*2*SampleRate);
+                    xfit = filtfilt(b,a,x_spem);
+                    v_spem = gradient(xfit,SampleRate); % calculate v and a
+                    Vspem{blcount,trcount} = v_spem;
                 end
-                clear t
-            else
-                Tspem(blcount,trcount) = nan;
             end
         end
     end
     
-    Xvgs = squeeze(Xsorted(2,:,:));
-    for blcount = 1:size(Xvgs,1)
-        for trcount = 1:size(Xvgs,2)
-            x_vgs = Xvgs{blcount,trcount};
-            [tinit,~,amp] = DetectVGS(x_vgs);
-            Tvgs(blcount,trcount) = tinit;
-            Mvgs(blcount,trcount) = amp;
-            clear t amp
+    % detect spem initiation
+    if DetectSPEMinit
+
+        for blcount = 1:size(Xspem,1)
+            for trcount = 1:size(Xspem,2)
+                BadTrials = TrialsToRemove{blcount};
+                if sum(BadTrials == trcount) == 0
+                    x_spem = Xspem{blcount,trcount};
+                    
+                    [b,a] = butter(6,20*2*SampleRate);
+                    xfit = filtfilt(b,a,x_spem);
+                    v_spem = gradient(xfit,SampleRate); % calculate v and a
+                    trial_subtype = Trialspem(blcount,trcount);
+                    try
+                        t = DetectSPEMinit(v_spem,trial_subtype);
+                        Tspem(blcount,trcount) = t;
+                    catch
+                        error('not detected spem init')
+                    end
+                    clear t
+                else
+                    Tspem(blcount,trcount) = nan;
+                end
+            end
+        end
+        
+        Results.Tspem = Tspem;
+        Results.Tspem = Tspem;
+    end
+    
+    % detect VGS
+    if DetectVGS
+        Xvgs = squeeze(Xsorted(2,:,:));
+        for blcount = 1:size(Xvgs,1)
+            for trcount = 1:size(Xvgs,2)
+                x_vgs = Xvgs{blcount,trcount};
+                [tinit,~,amp] = DetectVGS(x_vgs);
+                Tvgs(blcount,trcount) = tinit;
+                Mvgs(blcount,trcount) = amp;
+                clear t amp
+            end
+        end
+        
+        Results.Tvgs = Tvgs;
+        Results.Mvgs = Mvgs;
+    end
+end
+
+
+
+%% Truncate the pursuit position traces
+Xspem = squeeze(Xsorted(1,:,:));
+L = cell2mat(cellfun(@length,Xspem,'UniformOutput' ,0));
+L(L == 0) = nan;
+Lmin = min(min(L));
+Xspem_trunc(:,:,:) = nan(size(Xspem,1),size(Xspem,2),Lmin);
+TrialsOrder = I.StimulusObject.S.trialsorder;
+for bcount = 1:size(Xspem,1)
+    BadTrials = TrialsToRemove{blcount};
+    for trcount = 1:size(Xspem,2)
+        if sum(BadTrials == trcount) == 0
+        Xspem_trunc(bcount,TrialsOrder(trcount),:) = Xspem{bcount,trcount}(1:Lmin);
+        end
+    end
+end
+Results.Xspem = Xspem_trunc; 
+
+%% Truncate the pursuit velocity traces
+TrialsOrder = I.StimulusObject.S.trialsorder;
+if CalculateVelocity
+    L = cell2mat(cellfun(@length,Vspem,'UniformOutput' ,0));
+    L(L == 0) = nan;
+    Lmin = min(min(L));
+    Vspem_trunc(:,:,:) = nan(size(Vspem,1),size(Vspem,2),Lmin);
+    for bcount = 1:size(Vspem,1)
+        BadTrials = TrialsToRemove{blcount};
+        for trcount = 1:size(Vspem,2) 
+            if sum(BadTrials == trcount) == 0 && ~isempty(Vspem{bcount,trcount})
+            Vspem_trunc(bcount,TrialsOrder(trcount),:) = Vspem{bcount,trcount}(1:Lmin);
+            end
         end
     end
     
+Results.Vspem = Vspem_trunc;    
 end
 
 
-%% Truncate the pursuit velocity traces
-L = cell2mat(cellfun(@length,Vspem,'UniformOutput' ,0));
-Lmin = min(min(L));
-Vspem_trunc(:,:,:) = nan(size(Vspem,1),size(Vspem,2),Lmin);
-for bcount = 1:size(Vspem,1)
-    for trcount = 1:size(Vspem,2)
-        Vspem_trunc(bcount,trcount,:) = Vspem{bcount,trcount}(1:Lmin);
+%%
+if DesaccadeVelocity
+    for bcount = 1:size(Results.Vspem,1)
+%         BadTrials = TrialsToRemove{blcount};
+        for trcount = 1:size(Results.Vspem,2) 
+            vspem_temp = squeeze(Results.Vspem(bcount,trcount,:));
+            
+            v_desaccade = doDesaccadeVelocity(vspem_temp);
+            Vspem_desaccade(bcount,trcount,:) = v_desaccade;
+        end
     end
 end
 
-%%
-
-Results.Vspem = Vspem_trunc;
-Results.Tvgs = Tvgs;
-Results.Mvgs = Mvgs;
-Results.Tspem = Tspem;
-Results.Tspem = Tspem;
-
-
-%% 
-
+Results.Vspem_desaccade = Vspem_desaccade;
 end
 
 function t = DetectSPEMinit(x_spem,trial_subtype)
@@ -170,7 +256,7 @@ addpath('D:\Project Codes\Eye-Preprocess');
 if trial_subtype == pi
     x_spem = -x_spem;
 end
-Window = 800:1400;
+Window = 800:1600;
 x_spem = x_spem(Window);
 T = 0:SampleRate:((length(x_spem)-1)*SampleRate);
 param = lsqcurvefit(@Hinge,[.5 0 10],T,x_spem');
@@ -186,7 +272,21 @@ t = t + Window(1);
 close
 
 end
+function v_desaccade = doDesaccadeVelocity(v)
+figure('units','normalized','outerposition',[0 0 1 1])
+plot(v);
+[x, ~] = getpts;
+% SampleRate = 0.001;
+% [b,a] = butter(6,20*2*SampleRate);
+% vlpf = filtfilt(b,a,v);
 
+v_desaccade = v;
+for saccount = 1:2:length(x)
+    
+    v_desaccade(x(saccount):x(saccount+1)) = nan;
+end
+close;
+end
 function [tinit,tend,amp] = DetectVGS(x_vgs)
 x = x_vgs;
 SampleRate = 0.001;
@@ -227,9 +327,9 @@ if isempty(SItimesInit) || isempty(SEtimesInit)
     SaccadeEndTime = inf;
     SaccadeInitiationTime = inf;
     SaccadeAmplitude = 0;
-    S(c,tr,1) = SaccadeAmplitude;
-    S(c,tr,2) = SaccadeMidWay - 20;%SaccadeInitiationTime;
-    S(c,tr,3) = SaccadeMidWay + 40;%SaccadeEndTime;
+%     S(c,tr,1) = SaccadeAmplitude;
+%     S(c,tr,2) = SaccadeMidWay - 20;%SaccadeInitiationTime;
+%     S(c,tr,3) = SaccadeMidWay + 40;%SaccadeEndTime;
 else
     [~, idx1] = max(a(SItimesInit));
     SaccadeInitiationTime = SItimesInit(idx1);
