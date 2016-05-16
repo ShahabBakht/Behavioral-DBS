@@ -12,7 +12,7 @@ X = I.PreProcessedEye.EyePreProcessed.Xtrig;
 S = I.StimulusObject.S;
 global FixationTime
 FixationTime = 1000;
-
+StartAnalysisTime = 200;
 %% Sort the eye movements to VGS and SPEM    
 % Xsorted{#Conditions,#BlockPerCondition,#Trials}
 
@@ -99,12 +99,15 @@ Xspem = squeeze(Xsorted(1,:,:));
 for blcount = 1:size(Xspem,1)
     figure('units','normalized','outerposition',[0 0 1 1])
     for trcount = 1:size(Xspem,2)
+        Xspem{blcount,trcount} = Xspem{blcount,trcount}(StartAnalysisTime:end); 
         plot(Xspem{blcount,trcount});
         title(num2str(trcount));
         [x, y] = getpts;
         for blinkcount = 1:2:length(x)
             Xspem{blcount,trcount}(x(blinkcount):x(blinkcount+1)) = ((y(blinkcount+1) - y(blinkcount) )./(x(blinkcount+1) - x(blinkcount))) * (0:x(blinkcount+1)-x(blinkcount)) + y(blinkcount);
+            
         end
+        Xspem{blcount,trcount}(isnan(Xspem{blcount,trcount})) = 0;
     end
     close;
     
@@ -234,15 +237,17 @@ Results.Vspem = Vspem_trunc;
 end
 
 
-%%
+%% Desaccade the velocity traces
 if DesaccadeVelocity
     for bcount = 1:size(Results.Vspem,1)
-%         BadTrials = TrialsToRemove{blcount};
+        BadTrials = TrialsToRemove{blcount};
         for trcount = 1:size(Results.Vspem,2) 
+             if sum(BadTrials == trcount) == 0
             vspem_temp = squeeze(Results.Vspem(bcount,trcount,:));
             
             v_desaccade = doDesaccadeVelocity(vspem_temp);
             Vspem_desaccade(bcount,trcount,:) = v_desaccade;
+             end
         end
     end
 end
@@ -275,6 +280,7 @@ end
 function v_desaccade = doDesaccadeVelocity(v)
 figure('units','normalized','outerposition',[0 0 1 1])
 plot(v);
+
 [x, ~] = getpts;
 % SampleRate = 0.001;
 % [b,a] = butter(6,20*2*SampleRate);
