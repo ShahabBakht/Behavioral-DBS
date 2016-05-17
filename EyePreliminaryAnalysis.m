@@ -148,6 +148,7 @@ if RunOnSorted
                 end
             end
         end
+        Results.Vspem = Vspem;
     end
     
     % detect spem initiation
@@ -198,7 +199,24 @@ if RunOnSorted
     end
 end
 
+%% Desaccade the velocity traces
+if DesaccadeVelocity
+    for bcount = 1:size(Results.Vspem,1)
+        BadTrials = TrialsToRemove{bcount};
+        for trcount = 1:size(Results.Vspem,2) 
+             if sum(BadTrials == trcount) == 0
+%             vspem_temp = squeeze(Results.Vspem(bcount,trcount,:));
+            vspem_temp = squeeze(Results.Vspem{bcount,trcount});
+            
+            v_desaccade = doDesaccadeVelocity(vspem_temp);
+%             Vspem_desaccade(bcount,trcount,:) = v_desaccade;
+            Vspem_desaccade{bcount,trcount} = v_desaccade;
+             end
+        end
+    end
+end
 
+Results.Vspem_desaccade = Vspem_desaccade;
 
 %% Truncate the pursuit position traces
 Xspem = squeeze(Xsorted(1,:,:));
@@ -208,7 +226,7 @@ Lmin = min(min(L));
 Xspem_trunc(:,:,:) = nan(size(Xspem,1),size(Xspem,2),Lmin);
 TrialsOrder = I.StimulusObject.S.trialsorder;
 for bcount = 1:size(Xspem,1)
-    BadTrials = TrialsToRemove{blcount};
+    BadTrials = TrialsToRemove{bcount};
     for trcount = 1:size(Xspem,2)
         if sum(BadTrials == trcount) == 0
         Xspem_trunc(bcount,TrialsOrder(trcount),:) = Xspem{bcount,trcount}(1:Lmin);
@@ -224,35 +242,23 @@ if CalculateVelocity
     L(L == 0) = nan;
     Lmin = min(min(L));
     Vspem_trunc(:,:,:) = nan(size(Vspem,1),size(Vspem,2),Lmin);
+    Vspem_trunc_desacc(:,:,:) = nan(size(Vspem,1),size(Vspem,2),Lmin);
     for bcount = 1:size(Vspem,1)
-        BadTrials = TrialsToRemove{blcount};
+        BadTrials = TrialsToRemove{bcount};
         for trcount = 1:size(Vspem,2) 
             if sum(BadTrials == trcount) == 0 && ~isempty(Vspem{bcount,trcount})
             Vspem_trunc(bcount,TrialsOrder(trcount),:) = Vspem{bcount,trcount}(1:Lmin);
+            Vspem_trunc_desacc(bcount,TrialsOrder(trcount),:) = Vspem_desaccade{bcount,trcount}(1:Lmin);
             end
         end
     end
     
-Results.Vspem = Vspem_trunc;    
+Results.Vspem = Vspem_trunc;
+Results.Vspem_desacc = Vspem_trunc_desacc;
 end
 
 
-%% Desaccade the velocity traces
-if DesaccadeVelocity
-    for bcount = 1:size(Results.Vspem,1)
-        BadTrials = TrialsToRemove{blcount};
-        for trcount = 1:size(Results.Vspem,2) 
-             if sum(BadTrials == trcount) == 0
-            vspem_temp = squeeze(Results.Vspem(bcount,trcount,:));
-            
-            v_desaccade = doDesaccadeVelocity(vspem_temp);
-            Vspem_desaccade(bcount,trcount,:) = v_desaccade;
-             end
-        end
-    end
-end
 
-Results.Vspem_desaccade = Vspem_desaccade;
 end
 
 function t = DetectSPEMinit(x_spem,trial_subtype)
