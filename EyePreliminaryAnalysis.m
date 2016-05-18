@@ -141,7 +141,7 @@ if RunOnSorted
                 if sum(BadTrials == trcount) == 0
                     x_spem = Xspem{blcount,trcount};
                     
-                    [b,a] = butter(6,100*2*SampleRate);
+                    [b,a] = butter(6,20*2*SampleRate);
                     xfit = filtfilt(b,a,x_spem);
                     v_spem = gradient(xfit,SampleRate); % calculate v and a
                     Vspem{blcount,trcount} = v_spem;
