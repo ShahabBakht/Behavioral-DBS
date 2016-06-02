@@ -3,9 +3,9 @@ function Results = EyePreliminaryAnalysis(I)
 %% What to do
 
 DetectSPEMinit = false;
-DetectVGS = false;
-CalculateVelocity = true;
-DesaccadeVelocity = true;
+DetectVGS = true;
+CalculateVelocity = false;
+DesaccadeVelocity = false;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -92,6 +92,8 @@ ylim([-15,15]);
 
 
 %% Fill the blinks
+
+if CalculateVelocity | DetectSPEMinit
 Xspem = squeeze(Xsorted(1,:,:));
 % Tspem = nan(size(Xspem,1),size(Xspem,2));
 % Trialspem = squeeze(TrialSubType(1,:,:));
@@ -113,6 +115,7 @@ for blcount = 1:size(Xspem,1)
     
 end
 Xsorted(1,:,:) = Xspem;
+end
 
 %% Detect the initiations and calculate velocity 
 RunOnSorted = true;
@@ -141,7 +144,7 @@ if RunOnSorted
                 if sum(BadTrials == trcount) == 0
                     x_spem = Xspem{blcount,trcount};
                     
-                    [b,a] = butter(6,20*2*SampleRate);
+                    [b,a] = butter(6,100*2*SampleRate);
                     xfit = filtfilt(b,a,x_spem);
                     v_spem = gradient(xfit,SampleRate); % calculate v and a
                     Vspem{blcount,trcount} = v_spem;
@@ -184,12 +187,18 @@ if RunOnSorted
     % detect VGS
     if DetectVGS
         Xvgs = squeeze(Xsorted(2,:,:));
+        Tvgs = nan(size(Xvgs,1),size(Xvgs,2));
+        Mvgs = nan(size(Xvgs,1),size(Xvgs,2));
         for blcount = 1:size(Xvgs,1)
             for trcount = 1:size(Xvgs,2)
                 x_vgs = Xvgs{blcount,trcount};
-                [tinit,~,amp] = DetectVGS(x_vgs);
-                Tvgs(blcount,trcount) = tinit;
-                Mvgs(blcount,trcount) = amp;
+                try
+                [tinit,~,amp] = DoDetectVGS(x_vgs);
+                catch
+                    figure;plot(x_vgs);display(['error in block ',num2str(blcount),' trial ',num2str(trcount)])
+                end
+                if exist('tinit','var'), Tvgs(blcount,trcount) = tinit; end
+                if exist('amp','var'), Mvgs(blcount,trcount) = amp; end
                 clear t amp
             end
         end
@@ -214,9 +223,10 @@ if DesaccadeVelocity
              end
         end
     end
+    Results.Vspem_desaccade = Vspem_desaccade;
 end
 
-Results.Vspem_desaccade = Vspem_desaccade;
+
 
 %% Truncate the pursuit position traces
 Xspem = squeeze(Xsorted(1,:,:));
@@ -299,7 +309,7 @@ for saccount = 1:2:length(x)
 end
 close;
 end
-function [tinit,tend,amp] = DetectVGS(x_vgs)
+function [tinit,tend,amp] = DoDetectVGS(x_vgs)
 x = x_vgs;
 SampleRate = 0.001;
 global FixationTime
