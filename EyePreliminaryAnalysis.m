@@ -3,9 +3,9 @@ function Results = EyePreliminaryAnalysis(I)
 %% What to do
 
 DetectSPEMinit = false;
-DetectVGS = true;
-CalculateVelocity = false;
-DesaccadeVelocity = false;
+DetectVGS = false;
+CalculateVelocity = true;
+DesaccadeVelocity = true;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -15,7 +15,7 @@ FixationTime = 1000;
 StartAnalysisTime = 200;
 %% Sort the eye movements to VGS and SPEM    
 % Xsorted{#Conditions,#BlockPerCondition,#Trials}
-
+clocks = S.Clocks;
 blocksorder = S.blocksorder;
 blocktrials = S.blocktrials;
 trialsorder = S.trialsorder;
@@ -40,20 +40,30 @@ for trcount = 1:length(X)
             
             Xsorted{TrialType(trcount),SPEMBlockCounter,ThisTrialNumber} = X{trcount};
             TrialSubType(TrialType(trcount),SPEMBlockCounter,ThisTrialNumber) = trials(1,trialsorder(ThisTrialNumber));
+            clocks_spem(SPEMBlockCounter,ThisTrialNumber,:,:) = clocks(trcount,:,:);
+            
         else
             
             Xsorted{TrialType(trcount),VGSBlockCounter,ThisTrialNumber} = X{trcount}; 
             TrialSubType(TrialType(trcount),VGSBlockCounter,ThisTrialNumber) = trials(1,trialsorder(ThisTrialNumber));
+            clocks_vgs(VGSBlockCounter,ThisTrialNumber,:,:) = clocks(trcount,:,:);
+            
         end
     else
         if TrialType(trcount) == 1
+            
             SPEMBlockCounter = SPEMBlockCounter + 1;
             Xsorted{TrialType(trcount),SPEMBlockCounter,ThisTrialNumber} = X{trcount}; 
             TrialSubType(TrialType(trcount),SPEMBlockCounter,ThisTrialNumber) = trials(1,trialsorder(ThisTrialNumber));
+            clocks_spem(SPEMBlockCounter,ThisTrialNumber,:,:) = clocks(trcount,:,:);
+            
         else
+            
             VGSBlockCounter = VGSBlockCounter + 1;
             Xsorted{TrialType(trcount),VGSBlockCounter,ThisTrialNumber} = X{trcount}; 
             TrialSubType(TrialType(trcount),VGSBlockCounter,ThisTrialNumber) = trials(1,trialsorder(ThisTrialNumber));
+            clocks_vgs(VGSBlockCounter,ThisTrialNumber,:,:) = clocks(trcount,:,:);
+            
         end
     end
    PastBlockNumber = ThisBlockNumber;
