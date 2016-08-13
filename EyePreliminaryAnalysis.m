@@ -3,9 +3,9 @@ function Results = EyePreliminaryAnalysis(I)
 %% What to do
 
 DetectSPEMinit = false;
-DetectVGS = false;
-CalculateVelocity = true;
-DesaccadeVelocity = true;
+DetectVGS = true;
+CalculateVelocity = false;
+DesaccadeVelocity = false;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -68,8 +68,10 @@ for trcount = 1:length(X)
     end
    PastBlockNumber = ThisBlockNumber;
 end
-
+Results.ClocksSPEM = clocks_spem;
+Results.ClocksVGS = clocks_vgs;
 Results.Xsorted = Xsorted;
+Results.TrialSubType = TrialSubType;
 
 %% Display
 
@@ -389,19 +391,19 @@ else
 end
 
 % Check the automatic detection - Uncomment if needed
-% figure;plot(x);hold on;plot(round(tinit),x(round(tinit)),'+r')
-% [tinit_modified,~] = ginput(1);
-% if ~isempty(tinit_modified)
-%    tinit = tinit_modified;
-% end
-% close
-% 
-% figure;plot(x);hold on;plot(round(tend),x(round(tend)),'+r')
-% [tend_modified,~] = ginput(1);
-% if ~isempty(tend_modified)
-%    tend = tend_modified;
-% end
-% close            
+figure;plot(x);hold on;plot(round(tinit),x(round(tinit)),'+r')
+[tinit_modified,~] = ginput(1);
+if ~isempty(tinit_modified)
+   tinit = tinit_modified;
+end
+close
+
+figure;plot(x);hold on;plot(round(tend),x(round(tend)),'+r')
+[tend_modified,~] = ginput(1);
+if ~isempty(tend_modified)
+   tend = tend_modified;
+end
+close            
 
 end
 
