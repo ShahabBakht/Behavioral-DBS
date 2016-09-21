@@ -4,6 +4,10 @@
 % Results = EyePreliminaryAnalysis(I)
 % To get the smooth pursuit velocity and initiation time, as well as saccade amplitude and latency, this function
 % should be run. This is the function that should be run for each subject before doing any other analysis.
+% Different fields of Results variable:
+% TrialSubType: 2 * numBlocks * numTrials -- for each trial of VGS and SPEM, determines the angle of the target motion
+% Tvgs: numBlocks * numTrials -- saccade latency for each trial
+% Mvgs: numBlocks * numTrials -- saccade amplitude for each trial
 
 % EyeGENEActivResults = EyeGENEActivAnalysis(EyeData,GENEActivData,GENEActivClock)
 % In order to look at any relationship between GENEAcitv tremor data and eye movement data, this function should beused.

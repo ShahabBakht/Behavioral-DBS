@@ -24,8 +24,8 @@ GENEActivSPEMsamples = SPEMwindow * (1/GENEActivSamplingRate); % number of sampl
 
 r = GENEActivData;
 [coeff,score,latent] = pca(r);
-% x_noise = score(:,1);
-x_noise = GENEActivData(:,1);
+x_noise = score(:,1);
+% x_noise = GENEActivData(:,3);
 
 preTriggerWin = 0; % no sample before the clock
 
