@@ -2,6 +2,7 @@
 VGSDataLocation = 'D:\Analysis\Behavioral-STN-DBS\Eye\AllVGSData.xlsx';
 TremorDataLocation = 'D:\Analysis\Behavioral-STN-DBS\Tremor\AllTremorData.xlsx';
 PatientsNames = {'LA','AC','SC','CC','PC','DD','JL','CP','AV'};
+
 %% Import the data VGS
 
 [~, ~, raw] = xlsread(VGSDataLocation,'Sheet1','A2:F1641');
