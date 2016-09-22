@@ -3,9 +3,9 @@ function Results = EyePreliminaryAnalysis(I)
 %% What to do
 
 DetectSPEMinit = false;
-DetectVGS = false;
-CalculateVelocity = true;
-DesaccadeVelocity = true;
+DetectVGS = true;
+CalculateVelocity = false;
+DesaccadeVelocity = false;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
