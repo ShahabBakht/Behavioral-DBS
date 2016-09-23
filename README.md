@@ -10,7 +10,7 @@
 % Mvgs: numBlocks * numTrials -- saccade amplitude for each trial
 
 % EyeGENEActivResults = EyeGENEActivAnalysis(EyeData,GENEActivData,GENEActivClock)
-% In order to look at any relationship between GENEAcitv tremor data and eye movement data, this function should beused.
+% In order to look at any relationship between GENEAcitv tremor data and eye movement data, this function should be used.
 % To run this function, you need the output of EyePreliminaryAnalysis function which is EyeData.
 % In addtion, you need to first load the GENEActiv data which contains both the GENEActivClock and GENEActivData,
 % See below for running this function.
@@ -28,5 +28,11 @@
 % on the beginning of each saccade trial. 
 % *** To look at this relationship (i.e. left hand vs. right hand lag), a better approach is looking at the @home 
 % recordings while triggered one GENEActiv on the clock of the other one.
+
+% BatchAnalysisEyeTremor
+% This script plots all the Eye vs. Tremor graphs. 
+% To run this, we need to have the smooth pursuit velocity and saccade parameters, as well as the tremor data for the 
+% for the patients. These needs to be loaded from the Excel files in the Analysis folder. 
+% Having set the parameters at the beginning of the script, everything is ready to go.
 
 

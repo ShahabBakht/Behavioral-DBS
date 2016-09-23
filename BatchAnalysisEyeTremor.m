@@ -345,7 +345,7 @@ clearvars data raw cellVectors R;
 
 %% Estimate the SPEM mean velocity
 
-Patients = [1,2,3,4,5,6,7,8,9];
+% Patients = [1,2,3,4,5,6,7,8,9];
 NumPatients = length(Patients);
 
 % all the data (smooth pursuit velocity) OFF medication Leftward
@@ -390,7 +390,7 @@ end
 
 %%
 
-% Tremor vs Tvgs
+% Tremor vs SPEM Velocity
 figure(11);hold on;grid on;grid minor;xlabel('log tremor');ylabel('smooth pursuit velocity (degree/s)');
 figure(12);hold on;grid on;grid minor;xlabel('log tremor');ylabel('smooth pursuit velocity (degree/s)')
 addpath(genpath('D:\Project Codes\Tools\cbrewer'));
@@ -471,30 +471,29 @@ end
 
 meanMvgs_OFF = [meanMvgs_Left_OFF,meanMvgs_Right_OFF];
 meanMvgs_OFF = (meanMvgs_OFF-mean(meanMvgs_OFF))./std(meanMvgs_OFF);
-meanMvgs_Left_OFF_n = meanMvgs_OFF(1:9);
-meanMvgs_Right_OFF_n = meanMvgs_OFF(10:18);
+meanMvgs_Left_OFF_n = meanMvgs_OFF(1:NumPatients);
+meanMvgs_Right_OFF_n = meanMvgs_OFF((NumPatients+1):(NumPatients*2));
 
 meanTvgs_OFF = [meanTvgs_Left_OFF,meanTvgs_Right_OFF];
 meanTvgs_OFF = (meanTvgs_OFF-mean(meanTvgs_OFF))./std(meanTvgs_OFF);
-meanTvgs_Left_OFF_n = meanTvgs_OFF(1:9);
-meanTvgs_Right_OFF_n = meanTvgs_OFF(10:18);
+meanTvgs_Left_OFF_n = meanTvgs_OFF(1:NumPatients);
+meanTvgs_Right_OFF_n = meanTvgs_OFF((NumPatients+1):(NumPatients*2));
 
 meanVelocity_OFF = [-meanVelocity_Left_OFF,meanVelocity_Right_OFF];
 meanVelocity_OFF = (meanVelocity_OFF-mean(meanVelocity_OFF))./std(meanVelocity_OFF);
-meanVelocity_Left_OFF_n = meanVelocity_OFF(1:9);
-meanVelocity_Right_OFF_n = meanVelocity_OFF(10:18);
+meanVelocity_Left_OFF_n = meanVelocity_OFF(1:NumPatients);
+meanVelocity_Right_OFF_n = meanVelocity_OFF((NumPatients+1):(NumPatients*2));
 
 meanTremor_OFF = [meanTremor_Left_OFF,meanTremor_Right_OFF];
 meanTremor_OFF = (meanTremor_OFF-mean(meanTremor_OFF))./std(meanTremor_OFF);
-meanTremor_Left_OFF_n = meanTremor_OFF(1:9);
-meanTremor_Right_OFF_n = meanTremor_OFF(10:18);
+meanTremor_Left_OFF_n = meanTremor_OFF(1:NumPatients);
+meanTremor_Right_OFF_n = meanTremor_OFF((NumPatients+1):(NumPatients*2));
 
 
 
 %% Fit linear model to the OFF medications
 yn = meanTremor_Left_OFF_n';
-% yn = (y - mean(y))./std(y);
-% meanTvgs_Left_OFF_n = (meanTvgs_Left_OFF - mean(meanTvgs_Left_OFF))./std(meanTvgs_Left_OFF);
+
 mdl = LinearModel.fit(meanTvgs_Left_OFF_n,yn);
 Coeffs_Left(1) = mdl.Coefficients.Estimate(2);
 SE_Left(1) = mdl.Coefficients.SE(2);
@@ -504,7 +503,6 @@ CI_Left(1,:) = CI_temp(2,:);
 Corr = corrcoef(meanTvgs_Left_OFF_n,yn);
 Corr_Left(1) = Corr(2);
 
-% meanTvgs_Right_OFF_n = (meanTvgs_Right_OFF - mean(meanTvgs_Right_OFF))./std(meanTvgs_Right_OFF);
 mdl = LinearModel.fit(meanTvgs_Right_OFF_n,yn);
 Coeffs_Left(2) = mdl.Coefficients.Estimate(2);
 SE_Left(2) = mdl.Coefficients.SE(2);
@@ -514,7 +512,6 @@ CI_Left(2,:) = CI_temp(2,:);
 Corr = corrcoef(meanTvgs_Right_OFF_n,yn);
 Corr_Left(2) = Corr(2);
 
-% meanMvgs_Left_OFF_n = (meanMvgs_Left_OFF - mean(meanMvgs_Left_OFF))./std(meanMvgs_Left_OFF);
 mdl = LinearModel.fit(meanMvgs_Left_OFF_n,yn);
 Coeffs_Left(3) = mdl.Coefficients.Estimate(2);
 SE_Left(3) = mdl.Coefficients.SE(2);
@@ -525,7 +522,6 @@ Corr = corrcoef(meanMvgs_Left_OFF_n,yn);
 Corr_Left(3) = Corr(2);
 
 
-% meanMvgs_Right_OFF_n = (meanMvgs_Right_OFF - mean(meanMvgs_Right_OFF))./std(meanMvgs_Right_OFF);
 mdl = LinearModel.fit(meanMvgs_Right_OFF_n,yn);
 Coeffs_Left(4) = mdl.Coefficients.Estimate(2);
 SE_Left(4) = mdl.Coefficients.SE(2);
@@ -535,7 +531,6 @@ CI_Left(4,:) = CI_temp(2,:);
 Corr = corrcoef(meanMvgs_Right_OFF_n,yn);
 Corr_Left(4) = Corr(2);
 
-% meanVelocity_Left_OFF_n = -(meanVelocity_Left_OFF - mean(meanVelocity_Left_OFF))./std(meanVelocity_Left_OFF);
 mdl = LinearModel.fit(meanVelocity_Left_OFF_n,yn);
 Coeffs_Left(5) = mdl.Coefficients.Estimate(2);
 SE_Left(5) = mdl.Coefficients.SE(2);
@@ -545,7 +540,6 @@ CI_Left(5,:) = CI_temp(2,:);
 Corr = corrcoef(meanVelocity_Left_OFF_n,yn);
 Corr_Left(5) = Corr(2);
 
-% meanVelocity_Right_OFF_n = (meanVelocity_Right_OFF - mean(meanVelocity_Right_OFF))./std(meanVelocity_Right_OFF);
 mdl = LinearModel.fit(meanVelocity_Right_OFF_n,yn);
 Coeffs_Left(6) = mdl.Coefficients.Estimate(2);
 SE_Left(6) = mdl.Coefficients.SE(2);
@@ -564,8 +558,7 @@ subplot(2,2,2);bar(Coeffs_Left);title('coefficient')
                 
 
 yn = meanTremor_Right_OFF_n';
-% yn = (y - mean(y))./std(y);
-% meanTvgs_Left_OFF_n = (meanTvgs_Left_OFF - mean(meanTvgs_Left_OFF))./std(meanTvgs_Left_OFF);
+
 
 mdl = LinearModel.fit(meanTvgs_Left_OFF_n,yn);
 Coeffs_Right(1) = mdl.Coefficients.Estimate(2);
@@ -577,7 +570,6 @@ Corr = corrcoef(meanTvgs_Left_OFF_n,yn);
 Corr_Right(1) = Corr(2);
 
 
-% meanTvgs_Right_OFF_n = (meanTvgs_Right_OFF - mean(meanTvgs_Right_OFF))./std(meanTvgs_Right_OFF);
 
 mdl = LinearModel.fit(meanTvgs_Right_OFF_n,yn);
 Coeffs_Right(2) = mdl.Coefficients.Estimate(2);
@@ -588,7 +580,6 @@ CI_Right(2,:) = CI_temp(2,:);
 Corr = corrcoef(meanTvgs_Right_OFF_n,yn);
 Corr_Right(2) = Corr(2);
 
-% meanMvgs_Left_OFF_n = (meanMvgs_Left_OFF - mean(meanMvgs_Left_OFF))./std(meanMvgs_Left_OFF);
 
 mdl = LinearModel.fit(meanMvgs_Left_OFF_n,yn);
 Coeffs_Right(3) = mdl.Coefficients.Estimate(2);
@@ -599,7 +590,6 @@ CI_Right(3,:) = CI_temp(2,:);
 Corr = corrcoef(meanMvgs_Left_OFF_n,yn);
 Corr_Right(3) = Corr(2);
 
-% meanMvgs_Right_OFF_n = (meanMvgs_Right_OFF - mean(meanMvgs_Right_OFF))./std(meanMvgs_Right_OFF);
 mdl = LinearModel.fit(meanMvgs_Right_OFF_n,yn);
 Coeffs_Right(4) = mdl.Coefficients.Estimate(2);
 SE_Right(4) = mdl.Coefficients.SE(2);
@@ -609,7 +599,6 @@ CI_Right(4,:) = CI_temp(2,:);
 Corr = corrcoef(meanMvgs_Right_OFF_n,yn);
 Corr_Right(4) = Corr(2);
 
-% meanVelocity_Left_OFF_n = -(meanVelocity_Left_OFF - mean(meanVelocity_Left_OFF))./std(meanVelocity_Left_OFF);
 mdl = LinearModel.fit(meanVelocity_Left_OFF_n,yn);
 Coeffs_Right(5) = mdl.Coefficients.Estimate(2);
 SE_Right(5) = mdl.Coefficients.SE(2);
@@ -619,7 +608,6 @@ CI_Right(5,:) = CI_temp(2,:);
 Corr = corrcoef(meanVelocity_Left_OFF_n,yn);
 Corr_Right(5) = Corr(2);
 
-% meanVelocity_Right_OFF_n = (meanVelocity_Right_OFF - mean(meanVelocity_Right_OFF))./std(meanVelocity_Right_OFF);
 mdl = LinearModel.fit(meanVelocity_Right_OFF_n,yn);
 Coeffs_Right(6) = mdl.Coefficients.Estimate(2);
 SE_Right(6) = mdl.Coefficients.SE(2);
@@ -644,12 +632,12 @@ mdl = LinearModel.fit(x,yn);
 Coeffs(1) = mdl.Coefficients.Estimate(2);
 SE(1) = mdl.Coefficients.SE(2);
 
-x = meanMvgs_Right_OFF_n - meanMvgs_Left_OFF_n;
+x = meanMvgs_Left_OFF_n - meanMvgs_Right_OFF_n;
 mdl = LinearModel.fit(x,yn);
 Coeffs(2) = mdl.Coefficients.Estimate(2);
 SE(2) = mdl.Coefficients.SE(2);
 
-x = meanVelocity_Right_OFF_n - meanVelocity_Left_OFF_n;
+x = meanVelocity_Left_OFF_n - meanVelocity_Right_OFF_n;
 mdl = LinearModel.fit(x,yn);
 Coeffs(3) = mdl.Coefficients.Estimate(2);
 SE(3) = mdl.Coefficients.SE(2);

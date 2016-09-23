@@ -48,7 +48,7 @@ EyeGENEActivResults.TriggerGENEActivData_onVGS = TriggerGENEActivData_onVGS;
 Tvgs = EyeData.Tvgs;
 windowSize = 300; %ms
 windowSample = windowSize/(GENEActivSamplingRate/EyeSamplingRate); %number of samples;
-
+try
 for blockcount = 1:size(ClocksVGS,1)
     rtrcount = 0;
     ltrcount = 0;
@@ -63,6 +63,7 @@ for blockcount = 1:size(ClocksVGS,1)
             TriggerGENEActivData_onRRandom(blockcount,rtrcount,:) = squeeze(TriggerGENEActivData_onVGS(blockcount,trcount,(thisRandomTime_downsample-windowSample/2):(thisRandomTime_downsample+windowSample/2)));
         else
             ltrcount = ltrcount + 1;
+            
             TriggerGENEActivData_onLSaccade(blockcount,ltrcount,:) = squeeze(TriggerGENEActivData_onVGS(blockcount,trcount,(thisSaccadeTime_downsample-windowSample/2):(thisSaccadeTime_downsample+windowSample/2)));
             TriggerGENEActivData_onLRandom(blockcount,ltrcount,:) = squeeze(TriggerGENEActivData_onVGS(blockcount,trcount,(thisRandomTime_downsample-windowSample/2):(thisRandomTime_downsample+windowSample/2)));
         end
@@ -72,5 +73,6 @@ EyeGENEActivResults.TriggerGENEActivData_onRSaccade = TriggerGENEActivData_onRSa
 EyeGENEActivResults.TriggerGENEActivData_onLSaccade = TriggerGENEActivData_onLSaccade;
 EyeGENEActivResults.TriggerGENEActivData_onLRandom = TriggerGENEActivData_onLRandom;
 EyeGENEActivResults.TriggerGENEActivData_onRRandom = TriggerGENEActivData_onRRandom;
-
+catch
+end
 end
