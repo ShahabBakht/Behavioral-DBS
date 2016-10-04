@@ -225,7 +225,7 @@ end
 %% Plot the results
 % Tremor vs Tvgs
 figure(1);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)');
-figure(2);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
+% figure(2);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
 addpath(genpath('D:\Project Codes\Tools\cbrewer'));
 colors = cbrewer('qual', 'Set1', NumPatients);
 for patientcount = 1:NumPatients
@@ -235,36 +235,36 @@ for patientcount = 1:NumPatients
     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
     text(meanTremor_OFF(patientcount),meanTvgs_OFF(patientcount),PatientsNames{patientcount})
     
-    figure(2);h = ploterr(meanTremor_Left_OFF(patientcount),meanTvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Left_OFF(patientcount),meanTvgs_Left_OFF(patientcount),PatientsNames{patientcount})
-    
-    
-    figure(2);h = ploterr(meanTremor_Right_OFF(patientcount),meanTvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semTvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade latency -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Right_OFF(patientcount),meanTvgs_Right_OFF(patientcount),PatientsNames{patientcount})
-    
-    figure(2);h = ploterr(meanTremor_Left_OFF(patientcount),meanTvgs_Right_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Left_OFF(patientcount),meanTvgs_Right_OFF(patientcount),PatientsNames{patientcount})
-    
-    figure(2);h = ploterr(meanTremor_Right_OFF(patientcount),meanTvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Right_OFF(patientcount),meanTvgs_Left_OFF(patientcount),PatientsNames{patientcount})
+%     figure(2);h = ploterr(meanTremor_Left_OFF(patientcount),meanTvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Left_OFF(patientcount),meanTvgs_Left_OFF(patientcount),PatientsNames{patientcount})
+%     
+%     
+%     figure(2);h = ploterr(meanTremor_Right_OFF(patientcount),meanTvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semTvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade latency -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Right_OFF(patientcount),meanTvgs_Right_OFF(patientcount),PatientsNames{patientcount})
+%     
+%     figure(2);h = ploterr(meanTremor_Left_OFF(patientcount),meanTvgs_Right_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Left_OFF(patientcount),meanTvgs_Right_OFF(patientcount),PatientsNames{patientcount})
+%     
+%     figure(2);h = ploterr(meanTremor_Right_OFF(patientcount),meanTvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semTvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade latency -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Right_OFF(patientcount),meanTvgs_Left_OFF(patientcount),PatientsNames{patientcount})
     
     
 %     
 end
 figure(3);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
-figure(4);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
+% figure(4);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
 addpath(genpath('D:\Project Codes\Tools\cbrewer'));
 colors = cbrewer('qual', 'Set1', NumPatients);
 for patientcount = 1:NumPatients
@@ -318,7 +318,7 @@ end
 
 % Tremor vs Mvgs
 figure(5);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)');
-figure(6);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)')
+% figure(6);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)')
 addpath(genpath('D:\Project Codes\Tools\cbrewer'));
 colors = cbrewer('qual', 'Set1', NumPatients);
 for patientcount = 1:NumPatients
@@ -328,33 +328,33 @@ for patientcount = 1:NumPatients
     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
     text(meanTremor_OFF(patientcount),meanMvgs_OFF(patientcount),PatientsNames{patientcount})
     
-    figure(6);h = ploterr(meanTremor_Left_OFF(patientcount),meanMvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semMvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade amplitude -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Left_OFF(patientcount),meanMvgs_Left_OFF(patientcount),PatientsNames{patientcount})
-    
-    figure(6);h = ploterr(meanTremor_Right_OFF(patientcount),meanMvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Right_OFF(patientcount),meanMvgs_Right_OFF(patientcount),PatientsNames{patientcount})
-    
-     figure(6);h = ploterr(meanTremor_Left_OFF(patientcount),meanMvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Left_OFF(patientcount),meanMvgs_Right_OFF(patientcount),PatientsNames{patientcount})
-    
-     figure(6);h = ploterr(meanTremor_Right_OFF(patientcount),meanMvgs_Left_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
-    set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
-    set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
-    text(meanTremor_Right_OFF(patientcount),meanMvgs_Left_OFF(patientcount),PatientsNames{patientcount})
+%     figure(6);h = ploterr(meanTremor_Left_OFF(patientcount),meanMvgs_Left_OFF(patientcount),semTremor_Left_OFF(patientcount),semMvgs_Right_OFF(patientcount),'.','abshhxy', 0);title('Left tremor vs. Left saccade amplitude -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Left_OFF(patientcount),meanMvgs_Left_OFF(patientcount),PatientsNames{patientcount})
+%     
+%     figure(6);h = ploterr(meanTremor_Right_OFF(patientcount),meanMvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Right_OFF(patientcount),meanMvgs_Right_OFF(patientcount),PatientsNames{patientcount})
+%     
+%      figure(6);h = ploterr(meanTremor_Left_OFF(patientcount),meanMvgs_Right_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Left_OFF(patientcount),meanMvgs_Right_OFF(patientcount),PatientsNames{patientcount})
+%     
+%      figure(6);h = ploterr(meanTremor_Right_OFF(patientcount),meanMvgs_Left_OFF(patientcount),semTremor_Right_OFF(patientcount),semMvgs_Left_OFF(patientcount),'.','abshhxy', 0);title('Right tremor vs. Right saccade amplitude -- OFF')
+%     set(h(1), 'color', colors(patientcount, : ), 'markersize', 30);
+%     set(h(2), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     set(h(3), 'color', colors(patientcount, : ), 'linewidth', 0.5);
+%     text(meanTremor_Right_OFF(patientcount),meanMvgs_Left_OFF(patientcount),PatientsNames{patientcount})
     
 end
 figure(7);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)')
-figure(8);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)')
+% figure(8);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade amplitude (degree)')
 addpath(genpath('D:\Project Codes\Tools\cbrewer'));
 colors = cbrewer('qual', 'Set1', NumPatients);
 for patientcount = 1:NumPatients
@@ -827,72 +827,102 @@ figure(17);subplot(2,2,4);bar(Coeffs);title('laterality')
 
 % for Mvgs
 
-meanMvgs_concat_OFF = [meanMvgs_Left_OFF,meanMvgs_Right_OFF,meanMvgs_Left_OFF,meanMvgs_Right_OFF];
-meanTremor_concat_OFF = [meanTremor_Left_OFF,meanTremor_Left_OFF,meanTremor_Right_OFF,meanTremor_Right_OFF];
+meanMvgs_concat_OFF = [meanMvgs_Left_OFF;meanMvgs_Right_OFF;meanMvgs_Left_OFF;meanMvgs_Right_OFF];
+meanTremor_concat_OFF = [meanTremor_Left_OFF;meanTremor_Left_OFF;meanTremor_Right_OFF;meanTremor_Right_OFF];
 
 for iter = 1:1000
-    sampleidx = randi(length(meanMvgs_concat_OFF),NumPatients,1);
-    sampleMvgs = meanMvgs_concat_OFF(sampleidx);
-    sampleTremor = meanTremor_concat_OFF(sampleidx);
-    C = corrcoef(sampleMvgs,sampleTremor);
+    sampleidx = randi(size(meanMvgs_concat_OFF,1),NumPatients,1);
+    for patientcount = 1:NumPatients
+        sampleMvgs(patientcount) = meanMvgs_concat_OFF(sampleidx(patientcount),patientcount);
+        sampleTremor(patientcount) = meanTremor_concat_OFF(sampleidx(patientcount),patientcount);
+    end
+    
+    [C, P] = corrcoef(sampleMvgs,sampleTremor);
     Correlation(iter) = C(2);
+    Pvalue(iter) = P(2);
 end
 
-Ctemp = corrcoef(meanMvgs_Left_OFF,meanTremor_Right_OFF);
+[Ctemp, Ptemp] = corrcoef(meanMvgs_Left_OFF,meanTremor_Right_OFF);
 CorrLMvgsRTremor = Ctemp(2);
-Ctemp = corrcoef(meanMvgs_Left_OFF,meanTremor_Left_OFF);
+PvalueLMvgsRTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(meanMvgs_Left_OFF,meanTremor_Left_OFF);
 CorrLMvgsLTremor = Ctemp(2);
-Ctemp = corrcoef(meanMvgs_Right_OFF,meanTremor_Left_OFF);
+PvalueLMvgsLTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(meanMvgs_Right_OFF,meanTremor_Left_OFF);
 CorrRMvgsLTremor = Ctemp(2);
-Ctemp = corrcoef(meanMvgs_Right_OFF,meanTremor_Right_OFF);
+PvalueRMvgsLTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(meanMvgs_Right_OFF,meanTremor_Right_OFF);
 CorrRMvgsRTremor = Ctemp(2);
+PvalueRMvgsRTremor = Ptemp(2);
 
 figure;plot(1:4,[CorrLMvgsRTremor,CorrLMvgsLTremor,CorrRMvgsLTremor,CorrRMvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('saccade amplitude and tremor correlations')
+figure;plot(1:4,[PvalueLMvgsRTremor,PvalueLMvgsLTremor,PvalueRMvgsLTremor,PvalueRMvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+title('saccade amplitude and tremor pvalue')
 
 % for Tvgs
-meanTvgs_concat_OFF = [meanTvgs_Left_OFF,meanTvgs_Right_OFF,meanTvgs_Left_OFF,meanTvgs_Right_OFF];
+meanTvgs_concat_OFF = [meanTvgs_Left_OFF;meanTvgs_Right_OFF;meanTvgs_Left_OFF;meanTvgs_Right_OFF];
 
 for iter = 1:1000
-    sampleidx = randi(length(meanMvgs_concat_OFF),NumPatients,1);
-    sampleTvgs = meanTvgs_concat_OFF(sampleidx);
-    sampleTremor = meanTremor_concat_OFF(sampleidx);
-    C = corrcoef(sampleTvgs,sampleTremor);
+    sampleidx = randi(size(meanTvgs_concat_OFF,1),NumPatients,1);
+    for patientcount = 1:NumPatients
+        sampleTvgs(patientcount) = meanTvgs_concat_OFF(sampleidx(patientcount),patientcount);
+        sampleTremor(patientcount) = meanTremor_concat_OFF(sampleidx(patientcount),patientcount);
+    end
+    
+    [C,P] = corrcoef(sampleTvgs,sampleTremor);
     Correlation(iter) = C(2);
+    Pvalue(iter) = P(2);
 end
 
-Ctemp = corrcoef(meanTvgs_Left_OFF,meanTremor_Right_OFF);
+[Ctemp,Ptemp] = corrcoef(meanTvgs_Left_OFF,meanTremor_Right_OFF);
 CorrLTvgsRTremor = Ctemp(2);
-Ctemp = corrcoef(meanTvgs_Left_OFF,meanTremor_Left_OFF);
+PvalueLTvgsRTremor = Ptemp(2);
+[Ctemp,Ptemp] = corrcoef(meanTvgs_Left_OFF,meanTremor_Left_OFF);
 CorrLTvgsLTremor = Ctemp(2);
-Ctemp = corrcoef(meanTvgs_Right_OFF,meanTremor_Left_OFF);
+PvalueLTvgsLTremor = Ptemp(2);
+[Ctemp,Ptemp] = corrcoef(meanTvgs_Right_OFF,meanTremor_Left_OFF);
 CorrRTvgsLTremor = Ctemp(2);
-Ctemp = corrcoef(meanTvgs_Right_OFF,meanTremor_Right_OFF);
+PvalueRTvgsLTremor = Ptemp(2);
+[Ctemp,Ptemp] = corrcoef(meanTvgs_Right_OFF,meanTremor_Right_OFF);
 CorrRTvgsRTremor = Ctemp(2);
+PvalueRTvgsRTremor = Ptemp(2);
 
 figure;plot(1:4,[CorrLTvgsRTremor,CorrLTvgsLTremor,CorrRTvgsLTremor,CorrRTvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('saccade latency and tremor correlations')
+figure;plot(1:4,[PvalueLTvgsRTremor,CorrLTvgsLTremor,PvalueRTvgsLTremor,PvalueRTvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+title('saccade latency and tremor pvalue')
 
 % for pursuit velocity
-meanVelocity_concat_OFF = [-meanVelocity_Left_OFF,meanVelocity_Right_OFF,-meanVelocity_Left_OFF,meanVelocity_Right_OFF];
+meanVelocity_concat_OFF = [-meanVelocity_Left_OFF;meanVelocity_Right_OFF;-meanVelocity_Left_OFF;meanVelocity_Right_OFF];
 
 for iter = 1:1000
-    sampleidx = randi(length(meanVelocity_concat_OFF),NumPatients,1);
-    sampleVelocity = meanVelocity_concat_OFF(sampleidx);
-    sampleTremor = meanTremor_concat_OFF(sampleidx);
-    C = corrcoef(sampleVelocity,sampleTremor);
+    sampleidx = randi(size(meanVelocity_concat_OFF,1),NumPatients,1);
+    for patientcount = 1:NumPatients
+        sampleMvgs(patientcount) = meanVelocity_concat_OFF(sampleidx(patientcount),patientcount);
+        sampleTremor(patientcount) = meanTremor_concat_OFF(sampleidx(patientcount),patientcount);
+    end
+    
+    [C,P] = corrcoef(sampleMvgs,sampleTremor);
     Correlation(iter) = C(2);
+    Pvalue(iter) = P(2);
 end
 
-Ctemp = corrcoef(-meanVelocity_Left_OFF,meanTremor_Right_OFF);
+[Ctemp, Ptemp] = corrcoef(-meanVelocity_Left_OFF,meanTremor_Right_OFF);
 CorrLVelocityRTremor = Ctemp(2);
-Ctemp = corrcoef(-meanVelocity_Left_OFF,meanTremor_Left_OFF);
+PvalueLVelocityRTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(-meanVelocity_Left_OFF,meanTremor_Left_OFF);
 CorrLVelocityLTremor = Ctemp(2);
-Ctemp = corrcoef(meanVelocity_Right_OFF,meanTremor_Left_OFF);
+PvalueLVelocityLTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(meanVelocity_Right_OFF,meanTremor_Left_OFF);
 CorrRVelocityLTremor = Ctemp(2);
-Ctemp = corrcoef(meanVelocity_Right_OFF,meanTremor_Right_OFF);
+PvalueRVelocityLTremor = Ptemp(2);
+[Ctemp, Ptemp] = corrcoef(meanVelocity_Right_OFF,meanTremor_Right_OFF);
 CorrRVelocityRTremor = Ctemp(2);
+PvalueRVelocityRTremor = Ptemp(2);
 
 figure;plot(1:4,[CorrLVelocityRTremor,CorrLVelocityLTremor,CorrRVelocityLTremor,CorrRVelocityRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('smooth pursuit velocity and tremor correlations')
+figure;plot(1:4,[PvalueLVelocityRTremor,PvalueLVelocityLTremor,PvalueRVelocityLTremor,PvalueRVelocityRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+title('smooth pursuit velocity and tremor pvalue')
 

@@ -4,8 +4,8 @@ function Results = EyePreliminaryAnalysis(I)
 
 DetectSPEMinit = false;
 DetectVGS = true;
-CalculateVelocity = false;
-DesaccadeVelocity = false;
+CalculateVelocity = true;
+DesaccadeVelocity = true;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -153,6 +153,7 @@ RunOnSorted = true;
 SampleRate = 0.001;
 if RunOnSorted
     Xspem = squeeze(Xsorted(1,:,:));
+    Xvgs = squeeze(Xsorted(2,:,:));
     Tspem = nan(size(Xspem,1),size(Xspem,2));
     Trialspem = squeeze(TrialSubType(1,:,:));
     
@@ -164,6 +165,16 @@ if RunOnSorted
         end
         BadTrials = inputdlg('Which trials are bad?');
         TrialsToRemove{blcount} = str2num(BadTrials{1});
+    end
+    
+    for blcount = 1:size(Xvgs,1)
+        figure('units','normalized','outerposition',[0 0 1 1])
+        for trcount = 1:size(Xvgs,2)
+            subplot(ceil(sqrt(size(Xvgs,2))),ceil(sqrt(size(Xvgs,2))),trcount);plot(Xvgs{blcount,trcount});
+            title(num2str(trcount));
+        end
+        BadTrials = inputdlg('Which trials are bad?');
+        TrialsToRemove_VGS{blcount} = str2num(BadTrials{1});
     end
     
     if CalculateVelocity
@@ -221,15 +232,18 @@ if RunOnSorted
         Mvgs = nan(size(Xvgs,1),size(Xvgs,2));
         for blcount = 1:size(Xvgs,1)
             for trcount = 1:size(Xvgs,2)
-                x_vgs = Xvgs{blcount,trcount};
-                try
-                [tinit,~,amp] = DoDetectVGS(x_vgs);
-                catch
-                    figure;plot(x_vgs);display(['error in block ',num2str(blcount),' trial ',num2str(trcount)])
+                BadTrials = TrialsToRemove_VGS{blcount};
+                if sum(BadTrials == trcount) == 0
+                    x_vgs = Xvgs{blcount,trcount};
+                    try
+                        [tinit,~,amp] = DoDetectVGS(x_vgs);
+                    catch
+                        figure;plot(x_vgs);display(['error in block ',num2str(blcount),' trial ',num2str(trcount)])
+                    end
+                    if exist('tinit','var'), Tvgs(blcount,trcount) = tinit; end
+                    if exist('amp','var'), Mvgs(blcount,trcount) = amp; end
+                    clear t amp
                 end
-                if exist('tinit','var'), Tvgs(blcount,trcount) = tinit; end
-                if exist('amp','var'), Mvgs(blcount,trcount) = amp; end
-                clear t amp
             end
         end
         
