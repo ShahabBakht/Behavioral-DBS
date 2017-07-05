@@ -4,8 +4,8 @@ function Results = EyePreliminaryAnalysis(I)
 
 DetectSPEMinit = false;
 DetectVGS = true;
-CalculateVelocity = true;
-DesaccadeVelocity = true;
+CalculateVelocity = false;
+DesaccadeVelocity = false;
 
 %% Load data and stimulus object
 X = I.PreProcessedEye.EyePreProcessed.Xtrig;
@@ -81,8 +81,14 @@ for trcount = 1:length(X)
    PastBlockNumber = ThisBlockNumber;
 end
 if ~isempty(clocks)
-    Results.ClocksSPEM = clocks_spem;
-    Results.ClocksVGS = clocks_vgs;
+    try 
+        Results.ClocksSPEM = clocks_spem;
+    catch
+    end
+    try
+        Results.ClocksVGS = clocks_vgs;
+    catch
+    end
 else
     Results.ClocksSPEM = [];
     Results.ClocksVGS = [];
@@ -94,30 +100,30 @@ Results.TrialSubType = TrialSubType;
 %% Display
 
 % Plot SPEM
-cond = 1;
-h = figure('Position',[8, 558, 1906, 420]);
-subplot(1,2,cond);
-for blcount = 1:size(Xsorted,2)
-    for trcount = 1:size(Xsorted,3)
-        xtemp = Xsorted{cond,blcount,trcount};
-        plot(xtemp,'b');hold on
-        clear xtemp
-    end
-end
-title('Smooth Pursuit');xlabel('time (ms)');ylabel('eye horizontal position (degree)');grid minor
-ylim([-15,15]);
-% Plot VGS
-cond = 2;
-subplot(1,2,cond);
-for blcount = 1:size(Xsorted,2)
-    for trcount = 1:size(Xsorted,3)
-        xtemp = Xsorted{cond,blcount,trcount};
-        plot(xtemp,'r');hold on
-        clear xtemp
-    end
-end
-title('Visually Guided Saccades');xlabel('time (ms)');grid minor
-ylim([-15,15]);
+% cond = 1;
+% h = figure('Position',[8, 558, 1906, 420]);
+% subplot(1,2,cond);
+% for blcount = 1:size(Xsorted,2)
+%     for trcount = 1:size(Xsorted,3)
+%         xtemp = Xsorted{cond,blcount,trcount};
+%         plot(xtemp,'b');hold on
+%         clear xtemp
+%     end
+% end
+% title('Smooth Pursuit');xlabel('time (ms)');ylabel('eye horizontal position (degree)');grid minor
+% ylim([-15,15]);
+% % Plot VGS
+% cond = 2;
+% subplot(1,2,cond);
+% for blcount = 1:size(Xsorted,2)
+%     for trcount = 1:size(Xsorted,3)
+%         xtemp = Xsorted{cond,blcount,trcount};
+%         plot(xtemp,'r');hold on
+%         clear xtemp
+%     end
+% end
+% title('Visually Guided Saccades');xlabel('time (ms)');grid minor
+% ylim([-15,15]);
 
 
 

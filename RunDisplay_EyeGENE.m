@@ -1,12 +1,12 @@
 addpath('D:\Project Codes\Tremor\');
 addpath('D:\Project Codes\Tools\ploterr');
-datalocation = 'D:\Data\Tremor\Patients\Alexis Carbonneu\';
-filename = 'AC_right wrist_026357_2016-08-01 11-37-45.csv';
+datalocation = 'D:\Data\Tremor\Patients\Paul Comtois\';
+filename = 'PC_right wrist_026336_2016-07-04 10-21-32.csv';
 [GENEActivClockRight, x, y, z, ~] = OpenAccFile([datalocation filename]);
 GENEActivData_Right = [x, y, z];
 EyeGENEActivResults_Right = EyeGENEActivAnalysis(EyeData,GENEActivData_Right,GENEActivClockRight);
 
-filename = 'AC_left wrist_026344_2016-08-01 11-37-21.csv';
+filename = 'PC_left wrist_026357_2016-07-04 10-21-51.csv';
 [GENEActivClockLeft, x, y, z, light] = OpenAccFile([datalocation filename]);
 GENEActivData_Left = [x, y, z];
 EyeGENEActivResults_Left = EyeGENEActivAnalysis(EyeData,GENEActivData_Left,GENEActivClockLeft);

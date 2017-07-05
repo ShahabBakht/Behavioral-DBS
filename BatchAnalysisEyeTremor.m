@@ -223,6 +223,11 @@ for patientcount = 1:NumPatients
 end
     
 %% Plot the results
+meanTremor = [meanTremor_OFF,meanTremor_ON];
+meanTremorNorm = (meanTremor - min(meanTremor))./(max(meanTremor) - min(meanTremor));
+meanTremorNorm_OFF = meanTremorNorm(1:NumPatients);
+meanTremorNorm_ON = meanTremorNorm((NumPatients + 1):end);
+
 % Tremor vs Tvgs
 figure(1);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)');
 % figure(2);hold on;grid on;grid minor;xlabel('log tremor');ylabel('saccade latency (ms)')
@@ -422,6 +427,27 @@ for patientcount = 1:NumPatients
     
     
 end
+
+figure(21);
+for patientcount = 1:NumPatients
+    figure(21);plot([1,2],[meanMvgs_OFF(patientcount),meanMvgs_ON(patientcount)],'.--k','MarkerSize',20);hold on
+    set(gca,'YLim',[5.5,11],'XLim',[0.5,2.5],'XTick',[1,2],'XTickLabel',{'OFF','ON'},'LineWidth',1.25,'FontSize',10);grid on;grid minor
+    
+end
+figure(21);plot([1,2],[nanmean(meanMvgs_OFF),nanmean(meanMvgs_ON)],'^-r','MarkerSize',10,'LineWidth',2)
+ylabel('Saccade Amplitude ');xlabel('L-dopa State')
+box off
+
+
+figure(22);
+for patientcount = 1:NumPatients
+    figure(22);plot([1,2],[meanTvgs_OFF(patientcount) - 1000,meanTvgs_ON(patientcount) - 1000],'.--k','MarkerSize',20);hold on
+    set(gca,'YLim',[100,400],'XLim',[0.5,2.5],'XTick',[1,2],'XTickLabel',{'OFF','ON'},'LineWidth',1.25,'FontSize',10);grid on;grid minor
+    
+end
+figure(22);plot([1,2],[nanmean(meanTvgs_OFF - 1000),nanmean(meanTvgs_ON - 1000)],'^-r','MarkerSize',10,'LineWidth',2)
+ylabel('Saccade Latency (ms)');xlabel('L-dopa State')
+box off
 
 
 %% Import the data SPEM
@@ -625,15 +651,22 @@ for patientcount = 1:NumPatients
     
 end
 
-%% Save Figures
-fh=findall(0,'type','figure');
-numFigures = length(fh);
-
-for figcount = 1:numFigures
-    Command = ['saveas(figure(',num2str(figcount),'),''D:\Analysis\Behavioral-STN-DBS\Figures\Fig',num2str(figcount),'.png'');'];
-    eval(Command);
+for patientcount = 1:NumPatients
+    figure(19);plot([1,2],[meanTremorNorm_OFF(patientcount),meanTremorNorm_ON(patientcount)],'.--k','MarkerSize',20);hold on
+    set(gca,'YLim',[-.5,1.5],'XLim',[0.5,2.5],'XTickLabel',{'OFF','ON'},'LineWidth',1.25,'FontSize',10);grid on;grid minor
 end
-% saveas(figure(15),'tets.png')
+figure(19);plot([1,2],[nanmean(meanTremorNorm_OFF),nanmean(meanTremorNorm_ON)],'^-r','MarkerSize',10,'LineWidth',2)
+ylabel('Tremor Scale');xlabel('L-dopa State')
+box off
+
+for patientcount = 1:NumPatients
+    figure(20);plot([1,2],[meanVelocity_OFF(patientcount),meanVelocity_ON(patientcount)],'.--k','MarkerSize',20);hold on
+    set(gca,'YLim',[-3,8],'XLim',[0.5,2.5],'XTick',[1,2],'XTickLabel',{'OFF','ON'},'LineWidth',1.25,'FontSize',10);grid on;grid minor
+    
+end
+figure(20);plot([1,2],[nanmean(meanVelocity_OFF),nanmean(meanVelocity_ON)],'^-r','MarkerSize',10,'LineWidth',2)
+ylabel('Eye Velocity');xlabel('L-dopa State')
+box off
 
 %% normalize data for the linear fit
 
@@ -855,11 +888,11 @@ PvalueRMvgsLTremor = Ptemp(2);
 CorrRMvgsRTremor = Ctemp(2);
 PvalueRMvgsRTremor = Ptemp(2);
 
-figure;plot(1:4,[CorrLMvgsRTremor,CorrLMvgsLTremor,CorrRMvgsLTremor,CorrRMvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
+figure(18);subplot(1,3,1);plot(1:4,[CorrLMvgsRTremor,CorrLMvgsLTremor,CorrRMvgsLTremor,CorrRMvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'.','Color',[0.7,0.7,0.7]);plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('saccade amplitude and tremor correlations')
-figure;plot(1:4,[PvalueLMvgsRTremor,PvalueLMvgsLTremor,PvalueRMvgsLTremor,PvalueRMvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
-title('saccade amplitude and tremor pvalue')
-
+% figure;plot(1:4,[PvalueLMvgsRTremor,PvalueLMvgsLTremor,PvalueRMvgsLTremor,PvalueRMvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+% title('saccade amplitude and tremor pvalue')
+figure(18);set(gca,'XLim',[0,5],'XTickLabel',['']);
 % for Tvgs
 meanTvgs_concat_OFF = [meanTvgs_Left_OFF;meanTvgs_Right_OFF;meanTvgs_Left_OFF;meanTvgs_Right_OFF];
 
@@ -888,12 +921,11 @@ PvalueRTvgsLTremor = Ptemp(2);
 CorrRTvgsRTremor = Ctemp(2);
 PvalueRTvgsRTremor = Ptemp(2);
 
-figure;plot(1:4,[CorrLTvgsRTremor,CorrLTvgsLTremor,CorrRTvgsLTremor,CorrRTvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
+figure(18);subplot(1,3,2);plot(1:4,[CorrLTvgsRTremor,CorrLTvgsLTremor,CorrRTvgsLTremor,CorrRTvgsRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'.','Color',[0.7,0.7,0.7]);plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('saccade latency and tremor correlations')
-figure;plot(1:4,[PvalueLTvgsRTremor,CorrLTvgsLTremor,PvalueRTvgsLTremor,PvalueRTvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
-title('saccade latency and tremor pvalue')
-
-% for pursuit velocity
+% figure;plot(1:4,[PvalueLTvgsRTremor,CorrLTvgsLTremor,PvalueRTvgsLTremor,PvalueRTvgsRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+% title('saccade latency and tremor pvalue')
+figure(18);set(gca,'XLim',[0,5],'XTickLabel',['']);% for pursuit velocity
 meanVelocity_concat_OFF = [-meanVelocity_Left_OFF;meanVelocity_Right_OFF;-meanVelocity_Left_OFF;meanVelocity_Right_OFF];
 
 for iter = 1:1000
@@ -921,8 +953,17 @@ PvalueRVelocityLTremor = Ptemp(2);
 CorrRVelocityRTremor = Ctemp(2);
 PvalueRVelocityRTremor = Ptemp(2);
 
-figure;plot(1:4,[CorrLVelocityRTremor,CorrLVelocityLTremor,CorrRVelocityLTremor,CorrRVelocityRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'k.');plot(1:4,repmat(median(Correlation),4,1),'ko')
+figure(18);subplot(1,3,3);plot(1:4,[CorrLVelocityRTremor,CorrLVelocityLTremor,CorrRVelocityLTremor,CorrRVelocityRTremor],'or');hold on;plot(1:4,repmat(Correlation,4,1),'.','Color',[0.7,0.7,0.7]);plot(1:4,repmat(median(Correlation),4,1),'ko')
 title('smooth pursuit velocity and tremor correlations')
-figure;plot(1:4,[PvalueLVelocityRTremor,PvalueLVelocityLTremor,PvalueRVelocityLTremor,PvalueRVelocityRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
-title('smooth pursuit velocity and tremor pvalue')
+% figure;plot(1:4,[PvalueLVelocityRTremor,PvalueLVelocityLTremor,PvalueRVelocityLTremor,PvalueRVelocityRTremor],'or');hold on;plot(1:4,repmat(Pvalue,4,1),'k.');plot(1:4,repmat(median(Pvalue),4,1),'ko')
+% title('smooth pursuit velocity and tremor pvalue')
+figure(18);set(gca,'XLim',[0,5],'XTickLabel',['']);
 
+%% Save Figures
+fh=findall(0,'type','figure');
+numFigures = length(fh);
+
+for figcount = 1:numFigures
+    Command = ['saveas(figure(',num2str(figcount),'),''D:\Analysis\Behavioral-STN-DBS\Figures\EyeTremor\Fig',num2str(figcount),'.png'');'];
+    eval(Command);
+end
