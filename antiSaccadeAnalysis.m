@@ -43,8 +43,8 @@ for trcount = 1:numTrials
             ERROR(1,rightTargetCount) = 1;
         end
         
-        trigEyex{1,rightTargetCount} = EYEx(1,rightTargetCount,(1000:(floor(x(1))+50))) - mean(EYEx(1,rightTargetCount,(1:1000)));
-        trigEyey{1,rightTargetCount} = EYEy(1,rightTargetCount,(1000:(floor(x(1))+50))) - mean(EYEy(1,rightTargetCount,(1:1000)));
+        trigEyex{1,rightTargetCount} = EYEx(1,rightTargetCount,(1000:(floor(x(1))+50))) - nanmean(EYEx(1,rightTargetCount,(1:1000)));
+        trigEyey{1,rightTargetCount} = EYEy(1,rightTargetCount,(1000:(floor(x(1))+50))) - nanmean(EYEy(1,rightTargetCount,(1:1000)));
         else
             close;
             
@@ -89,8 +89,8 @@ for trcount = 1:numTrials
             ERROR(2,leftTargetCount) = 1;
         end
         
-        trigEyex{2,leftTargetCount} = EYEx(2,leftTargetCount,(1000:(floor(x(1))+50)))- mean(EYEx(2,leftTargetCount,(1:1000)));
-        trigEyey{2,leftTargetCount} = EYEy(2,leftTargetCount,(1000:(floor(x(1))+50)))- mean(EYEy(2,leftTargetCount,(1:1000)));
+        trigEyex{2,leftTargetCount} = EYEx(2,leftTargetCount,(1000:(floor(x(1))+50)))- nanmean(EYEx(2,leftTargetCount,(1:1000)));
+        trigEyey{2,leftTargetCount} = EYEy(2,leftTargetCount,(1000:(floor(x(1))+50)))- nanmean(EYEy(2,leftTargetCount,(1:1000)));
         else
             close;
             deltaT(2,leftTargetCount) = nan;
@@ -116,6 +116,10 @@ asResult.trigEYEy = trigEyey;
 asResult.LATENCY = LATENCY;
 asResult.MAG = MAG;
 asResult.ERROR = ERROR;
+asResult.LATENCYcorrective = LATENCYcorrective;
+asResult.deltaTcorrective = deltaTcorrective;
+asResult.MAGcorrective = MAGcorrective;
+asResult.deltaT = deltaT;
 
 end
 
