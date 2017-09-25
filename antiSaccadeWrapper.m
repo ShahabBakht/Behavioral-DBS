@@ -9,6 +9,7 @@ numPatients = length(List.PatientsList);
 
 for pidx = 1:numPatients
     PatientIdx = pidx;
+    fprintf(['Plotting patient ',num2str(pidx),'... \n']);
     plotAS();
     
 end
@@ -19,7 +20,11 @@ function plotAS()
 
 global PatientIdx PatientsList ...
     meanLATENCY_OFFmONs_AllPatients meanLATENCY_OFFmOFFs_AllPatients meanLATENCY_ONmOFFs_AllPatients meanLATENCY_ONmONs_AllPatients ...
-    phat_OFFmONs_AllPatients phat_OFFmOFFs_AllPatients phat_ONmOFFs_AllPatients phat_ONmONs_AllPatients
+    phat_OFFmONs_AllPatients phat_OFFmOFFs_AllPatients phat_ONmOFFs_AllPatients phat_ONmONs_AllPatients ...
+    meanVELOCITY_FALSE_OFFmONs_AllPatients meanVELOCITY_FALSE_OFFmOFFs_AllPatients meanVELOCITY_FALSE_ONmOFFs_AllPatients meanVELOCITY_FALSE_ONmONs_AllPatients ...
+    meanVELOCITY_TRUE_OFFmONs_AllPatients meanVELOCITY_TRUE_OFFmOFFs_AllPatients meanVELOCITY_TRUE_ONmOFFs_AllPatients meanVELOCITY_TRUE_ONmONs_AllPatients ...
+    
+    
 
 numPatients = length(PatientsList);
 % PatientIdx = pidx;
@@ -275,6 +280,17 @@ stdVELOCITY_FALSE_ONmONs = nanstd(VELOCITYfalse);
 stdVELOCITY_TRUE_ONmONs = nanstd(VELOCITYtrue);
 stdVELOCITY_CORR_ONmONs = nanstd(VELOCITYcorrective);
 
+% for all the patients
+meanVELOCITY_FALSE_OFFmONs_AllPatients(PatientIdx) = meanVELOCITY_FALSE_OFFmONs;
+meanVELOCITY_FALSE_OFFmOFFs_AllPatients(PatientIdx) = meanVELOCITY_FALSE_OFFmOFFs;
+meanVELOCITY_FALSE_ONmOFFs_AllPatients(PatientIdx) = meanVELOCITY_FALSE_ONmOFFs;
+meanVELOCITY_FALSE_ONmONs_AllPatients(PatientIdx) = meanVELOCITY_FALSE_ONmONs;
+
+meanVELOCITY_TRUE_OFFmONs_AllPatients(PatientIdx) = meanVELOCITY_TRUE_OFFmONs;
+meanVELOCITY_TRUE_OFFmOFFs_AllPatients(PatientIdx) = meanVELOCITY_TRUE_OFFmOFFs;
+meanVELOCITY_TRUE_ONmOFFs_AllPatients(PatientIdx) = meanVELOCITY_TRUE_ONmOFFs;
+meanVELOCITY_TRUE_ONmONs_AllPatients(PatientIdx) = meanVELOCITY_TRUE_ONmONs;
+
 
 
 % ---------------------
@@ -445,32 +461,63 @@ title('ON medication / ON stimulation');
 ylabel('Saccade Velocity');xlabel('Saccade Amplitude')
 set(gca,'XLim',[0,45],'YLim',[0,800])
 
+close all
+
 %% Plot Error rate and latency for all the conditions all the patients
 
 if PatientIdx == numPatients
     h=figure; hold on
     for pidx = 1:numPatients
-        plot(1:4,[meanLATENCY_OFFmONs_AllPatients(pidx),meanLATENCY_OFFmOFFs_AllPatients(pidx),meanLATENCY_ONmOFFs_AllPatients(pidx),meanLATENCY_ONmONs_AllPatients(pidx)],'.-','Color',[.5, .5, .8],'MarkerSize',10);
+        plot(1:4,[meanLATENCY_OFFmONs_AllPatients(pidx)-meanLATENCY_OFFmOFFs_AllPatients(pidx),meanLATENCY_OFFmOFFs_AllPatients(pidx)-meanLATENCY_OFFmOFFs_AllPatients(pidx),meanLATENCY_ONmOFFs_AllPatients(pidx)-meanLATENCY_OFFmOFFs_AllPatients(pidx),meanLATENCY_ONmONs_AllPatients(pidx)-meanLATENCY_OFFmOFFs_AllPatients(pidx)],'.-','Color',[.5, .5, .8],'MarkerSize',10);
     end
-    plot(1:4,[mean(meanLATENCY_OFFmONs_AllPatients),mean(meanLATENCY_OFFmOFFs_AllPatients), ...
-        mean(meanLATENCY_ONmOFFs_AllPatients),mean(meanLATENCY_ONmONs_AllPatients)],'^-b','MarkerSize',10,'LineWidth',2);
+    plot(1:4,[mean(meanLATENCY_OFFmONs_AllPatients)-mean(meanLATENCY_OFFmOFFs_AllPatients),mean(meanLATENCY_OFFmOFFs_AllPatients)-mean(meanLATENCY_OFFmOFFs_AllPatients), ...
+        mean(meanLATENCY_ONmOFFs_AllPatients)-mean(meanLATENCY_OFFmOFFs_AllPatients),mean(meanLATENCY_ONmONs_AllPatients)-mean(meanLATENCY_OFFmOFFs_AllPatients)],'^-b','MarkerSize',10,'LineWidth',2);
     
-    ylabel('Latency')
+    ylabel('Latency change relative to baseline')
     set(gca,'XTIck',[1,2,3,4],'XTickLabel',{'OFFmONs','OFFmOFFs','ONmOFFs','ONmONs'},'XTickLabelRotation',90,'fontsize',12)
     saveas(h,[figuresLocation,'ALL - asLATENCY_all cond_all patients.png'])
     
     
     h=figure; hold on
     for pidx = 1:numPatients
-        plot(1:4,[phat_OFFmONs_AllPatients(pidx),phat_OFFmOFFs_AllPatients(pidx),phat_ONmOFFs_AllPatients(pidx),phat_ONmONs_AllPatients(pidx)],'.-','Color',[.5, .5, .8],'MarkerSize',10);
+        plot(1:4,[phat_OFFmONs_AllPatients(pidx)-phat_OFFmOFFs_AllPatients(pidx),phat_OFFmOFFs_AllPatients(pidx)-phat_OFFmOFFs_AllPatients(pidx),phat_ONmOFFs_AllPatients(pidx)-phat_OFFmOFFs_AllPatients(pidx),phat_ONmONs_AllPatients(pidx)-phat_OFFmOFFs_AllPatients(pidx)],'.-','Color',[.5, .5, .8],'MarkerSize',10);
     end
-    plot(1:4,[mean(phat_OFFmONs_AllPatients),mean(phat_OFFmOFFs_AllPatients), ...
-        mean(phat_ONmOFFs_AllPatients),mean(phat_ONmONs_AllPatients)],'^-b','MarkerSize',10,'LineWidth',2);
+    plot(1:4,[mean(phat_OFFmONs_AllPatients)-mean(phat_OFFmOFFs_AllPatients),mean(phat_OFFmOFFs_AllPatients)-mean(phat_OFFmOFFs_AllPatients), ...
+        mean(phat_ONmOFFs_AllPatients)-mean(phat_OFFmOFFs_AllPatients),mean(phat_ONmONs_AllPatients)-mean(phat_OFFmOFFs_AllPatients)],'^-b','MarkerSize',10,'LineWidth',2);
     
-    ylabel('Error Rate')
+    ylabel('Error Rate change relative to baseline')
     set(gca,'XTIck',[1,2,3,4],'XTickLabel',{'OFFmONs','OFFmOFFs','ONmOFFs','ONmONs'},'XTickLabelRotation',90,'fontsize',12)
     saveas(h,[figuresLocation,'ALL - asErrorRate_all cond_ all patients.png'])
+    
+    h=figure; hold on
+    for pidx = 1:numPatients
+        plot(1:4,[meanVELOCITY_FALSE_OFFmONs_AllPatients(pidx)-meanVELOCITY_FALSE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_FALSE_OFFmOFFs_AllPatients(pidx)-meanVELOCITY_FALSE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_FALSE_ONmOFFs_AllPatients(pidx)-meanVELOCITY_FALSE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_FALSE_ONmONs_AllPatients(pidx)-meanVELOCITY_FALSE_OFFmOFFs_AllPatients(pidx)],...
+            '.-','Color',[.8, .5, .5],'MarkerSize',10);
+    end
+    plot(1:4,[mean(meanVELOCITY_FALSE_OFFmONs_AllPatients)-mean(meanVELOCITY_FALSE_OFFmOFFs_AllPatients),mean(meanVELOCITY_FALSE_OFFmOFFs_AllPatients)-mean(meanVELOCITY_FALSE_OFFmOFFs_AllPatients), ...
+        mean(meanVELOCITY_FALSE_ONmOFFs_AllPatients)-mean(meanVELOCITY_FALSE_OFFmOFFs_AllPatients),mean(meanVELOCITY_FALSE_ONmONs_AllPatients)-mean(meanVELOCITY_FALSE_OFFmOFFs_AllPatients)],'^-r','MarkerSize',10,'LineWidth',2);
+    
+    for pidx = 1:numPatients
+        plot(1:4,[meanVELOCITY_TRUE_OFFmONs_AllPatients(pidx)-meanVELOCITY_TRUE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_TRUE_OFFmOFFs_AllPatients(pidx)-meanVELOCITY_TRUE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_TRUE_ONmOFFs_AllPatients(pidx)-meanVELOCITY_TRUE_OFFmOFFs_AllPatients(pidx),...
+            meanVELOCITY_TRUE_ONmONs_AllPatients(pidx)-meanVELOCITY_TRUE_OFFmOFFs_AllPatients(pidx)],...
+            '.-','Color',[.5, .8, .5],'MarkerSize',10);
+    end
+    plot(1:4,[mean(meanVELOCITY_TRUE_OFFmONs_AllPatients)-mean(meanVELOCITY_TRUE_OFFmOFFs_AllPatients),mean(meanVELOCITY_TRUE_OFFmOFFs_AllPatients)-mean(meanVELOCITY_TRUE_OFFmOFFs_AllPatients), ...
+        mean(meanVELOCITY_TRUE_ONmOFFs_AllPatients)-mean(meanVELOCITY_TRUE_OFFmOFFs_AllPatients),mean(meanVELOCITY_TRUE_ONmONs_AllPatients)-mean(meanVELOCITY_TRUE_OFFmOFFs_AllPatients)],'^-g','MarkerSize',10,'LineWidth',2);
+    
+    
+    ylabel('VELOCITY change relative to the baseline');legend('error saccades','correct saccades');
+    set(gca,'XTIck',[1,2,3,4],'XTickLabel',{'OFFmONs','OFFmOFFs','ONmOFFs','ONmONs'},'XTickLabelRotation',90,'fontsize',12)
+    saveas(h,[figuresLocation,'ALL - asVELOCITY_all cond.png'])
+    
+    
+    
 end
 
-close all;
+
 end
