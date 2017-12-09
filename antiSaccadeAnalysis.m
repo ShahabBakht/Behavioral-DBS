@@ -1,6 +1,11 @@
 function asResult = antiSaccadeAnalysis(I)
 Xtrig = I.PreProcessedEye.EyePreProcessed.Xtrig;
 Ytrig = I.PreProcessedEye.EyePreProcessed.Ytrig;
+
+if I.falseSampling
+     Xtrig = cellfun(@(x)resample(x,4,1),Xtrig,'UniformOutput',false);
+     Ytrig = cellfun(@(x)resample(x,4,1),Ytrig,'UniformOutput',false);
+end
 numTrials = length(Xtrig);
 alltrials = I.StimulusObject.S.trials;
 trialsorder = I.StimulusObject.S.trialsorder;
@@ -22,7 +27,10 @@ for trcount = 1:numTrials
         if strcmp(button,'Yes')
         [x, y] = getpts;close;
         
-            
+        if length(x) < 2
+            plot(Xtrig{trcount}(1:eyeTraceMin) - nanmean(Xtrig{trcount}(1:1000)));hold on;plot(1:eyeTraceMin,10 * ones(1,eyeTraceMin),'r');title(['trial ',num2str(trcount)])
+            [x, y] = getpts;close;
+        end
         LATENCY(1,rightTargetCount) = x(1) - 1000;
         deltaT(1,rightTargetCount) = x(2) - x(1);
         MAG(1,rightTargetCount) = y(2) - y(1);
@@ -69,6 +77,12 @@ for trcount = 1:numTrials
         button = questdlg('good trial?');
         if strcmp(button,'Yes')
         [x, y] = getpts;close;
+        
+        if length(x) < 2
+            plot(Xtrig{trcount}(1:eyeTraceMin) - nanmean(Xtrig{trcount}(1:1000)));hold on;plot(1:eyeTraceMin,-10 * ones(1,eyeTraceMin),'r');title(['trial ',num2str(trcount)])
+            [x, y] = getpts;close;
+        end
+        
         LATENCY(2,leftTargetCount) = x(1) - 1000;
         deltaT(2,leftTargetCount) = x(2) - x(1);
         MAG(2,leftTargetCount) = y(2) - y(1);
