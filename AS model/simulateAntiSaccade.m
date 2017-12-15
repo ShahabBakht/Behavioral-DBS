@@ -1,38 +1,38 @@
-function [x_pro,x_anti, x_stop, LATENCY, RESPONSE] = simulateAntiSaccade()
+function [x_pro, x_anti, x_stop, LATENCY, RESPONSE] = simulateAntiSaccade(param,numTrials)
 
-mu_pro = 11.64;
-sigma_pro = 3.82;
+mu_pro = param.mu_pro;%12.64;
+sigma_pro = param.sigma_pro;%2.11;
 
-mu_anti = 11.64;
-sigma_anti = 3.82;
+mu_anti = param.mu_anti;%12.64;
+sigma_anti = param.sigma_anti;%2.11;
 
-delay_anti = 0.05;
+delay_anti = param.delay_anti;%0.05;
 
-mu_stop = 16;
-sigma_stop = 3.82;
+mu_stop = param.mu_stop;%17.5;
+sigma_stop =  param.sigma_stop;%2.11;
 
-theta = 3;
+theta = param.theta;%10;
 
 deltaT = 0.001;
 
-numTrials = 1000;
+% numTrials = 1000;
 
 for trial = 1:numTrials
 
     
 r_pro = normrnd(mu_pro,sigma_pro);
-while r_pro < 0
+while r_pro < 1
     r_pro = normrnd(mu_pro,sigma_pro);
 end
 r_anti = normrnd(mu_anti,sigma_anti);
-while r_anti < 0
+while r_anti < 1
     r_anti = normrnd(mu_anti,sigma_anti);
 end
 r_stop = normrnd(mu_stop,sigma_stop);
-while r_anti < 0
+while r_stop < 1
     r_stop = normrnd(mu_stop,sigma_stop);
 end
-fprintf([num2str(trial), ', r_pro = ',num2str(r_pro),', r_anti = ',num2str(r_anti),'\n']);
+% fprintf([num2str(trial), ', r_pro = ',num2str(r_pro),', r_anti = ',num2str(r_anti),'\n']);
 SACCADE = false;
 stopPRO = false;
 x_pro(trial,1) = 0;    

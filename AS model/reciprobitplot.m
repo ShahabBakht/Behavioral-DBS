@@ -12,7 +12,7 @@ hold on
 % Now, plot it cumulative probability in quantiles
 % this is easier to compare between different distributions
 p    = [1 2 5 10:10:90 95 98 99]/100; % some arbitrary probabilities
-q    = quantile(LATENCY,p); % instead of hist, let's use quantiles
+q    = quantile(rtinv,p); % instead of hist, let's use quantiles
  
 h = plot(q*1000,p*100,'ko','LineWidth',2,'MarkerFaceColor','r');
 hold on
@@ -37,7 +37,7 @@ plot(x,y,'k.');
 hold on
  
 % quantiles
-p    = [1 2 5 10:10:90 95 98 99]/100;
+p    = [1 2 5 10 20 50 80 90 95 98 99]/100;
 probit  = pa_probit(p);
 q    = quantile(rt,p);
 q    = -1./q;
