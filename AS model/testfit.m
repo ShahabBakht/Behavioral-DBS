@@ -8,7 +8,7 @@ param.mu_stop = 14;
 param.sigma_stop = 4;
 param.theta = 2;
 numTrials = 1000;
-[x_pro,x_anti, x_stop, LATENCY, RESPONSE] = simulateAntiSaccade(param,numTrials);
+[LATENCY, RESPONSE] = simulateAntiSaccade(param,numTrials);
 
 p = 0;
 for testmu_stop =  10:15
@@ -27,7 +27,7 @@ for testmu_stop =  10:15
                 fprintf(['theta = ',num2str(testtheta),' mu_stop = ',num2str(testmu_stop),' mu_pro = ',num2str(testmu_pro),' mu_anti = ',num2str(testmu_anti),'\n'])
                 j = j +1;
                 param.mu_anti = testmu_anti;
-                [~,~, ~, LATENCYtest, ~] = simulateAntiSaccade(param,numTrials);
+                [LATENCYtest, ~] = simulateAntiSaccade(param,numTrials);
                 [~,~,ks2stat(p,i,k,j)] = kstest2(LATENCYtest,LATENCY);
             end
         end
