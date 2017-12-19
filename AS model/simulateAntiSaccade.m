@@ -1,3 +1,4 @@
+% modify the model to simulate the trials in batch format not sequntial
 function [LATENCY, RESPONSE] = simulateAntiSaccade(param,numTrials)
 
 mu_pro = param.mu_pro;%12.64;
@@ -16,30 +17,39 @@ theta = param.theta;%10;
 deltaT = 0.001;
 
 % numTrials = 1000;
+r_pro = normrnd(mu_pro,sigma_pro,numTrials,1);
+r_anti = normrnd(mu_anti,sigma_anti,numTrials,1);
+r_stop = normrnd(mu_stop,sigma_stop,numTrials,1);
+errorPro = ((theta./r_pro) ) <= ((theta./r_stop) + delay_anti);
+LATENCY = theta./r_anti + delay_anti;
+RESPONSE = ones(size(LATENCY));
+LATENCY(errorPro) = theta./r_pro(errorPro);
+RESPONSE(errorPro) = 0;
 
-for trial = 1:numTrials
+% for trial = 1:numTrials
+% 
+%     
+% r_pro = normrnd(mu_pro,sigma_pro);
+% while r_pro < 1
+%     r_pro = normrnd(mu_pro,sigma_pro);
+% end
+% r_anti = normrnd(mu_anti,sigma_anti);
+% while r_anti < 1
+%     r_anti = normrnd(mu_anti,sigma_anti);
+% end
+% r_stop = normrnd(mu_stop,sigma_stop);
+% while r_stop < 1
+%     r_stop = normrnd(mu_stop,sigma_stop);
+% end
+% 
+% if ((theta/r_pro) ) <= ((theta/r_stop) + delay_anti)
+%     LATENCY(trial) = theta/r_pro;
+%     RESPONSE(trial) = 0;
+% else
+%     LATENCY(trial) = theta/r_anti + delay_anti;
+%     RESPONSE(trial) = 1;
+% end
 
-    
-r_pro = normrnd(mu_pro,sigma_pro);
-while r_pro < 1
-    r_pro = normrnd(mu_pro,sigma_pro);
-end
-r_anti = normrnd(mu_anti,sigma_anti);
-while r_anti < 1
-    r_anti = normrnd(mu_anti,sigma_anti);
-end
-r_stop = normrnd(mu_stop,sigma_stop);
-while r_stop < 1
-    r_stop = normrnd(mu_stop,sigma_stop);
-end
-
-if ((theta/r_pro) ) <= ((theta/r_stop) + delay_anti)
-    LATENCY(trial) = theta/r_pro;
-    RESPONSE(trial) = 0;
-else
-    LATENCY(trial) = theta/r_anti + delay_anti;
-    RESPONSE(trial) = 1;
-end
 % fprintf([num2str(trial), ', r_pro = ',num2str(r_pro),', r_anti = ',num2str(r_anti),'\n']);
 % SACCADE = false;
 % stopPRO = false;
@@ -104,7 +114,7 @@ end
 % 
 % end
         
-end
+% end
 
 
 
