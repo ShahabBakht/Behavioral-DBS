@@ -1,17 +1,18 @@
 clear all;clc;
 
 %% simulate
-param.mu_pro = 13;
+param.mu_pro = 10;
 param.sigma_pro = 2;
-param.mu_anti = 10;
+param.mu_anti = 8;
 param.sigma_anti = 2;
 param.delay_anti = 0.05;
-param.mu_stop = 14;
+param.mu_stop = 10;
 param.sigma_stop = 2;
 param.theta = 2;
 numTrials = 10000;
 [LATENCYemp, RESPONSE] = simulateAntiSaccade(param,numTrials);
-
+reciprobitplot(LATENCYemp)
+fprintf(['Error Rate = ',num2str((1-mean(RESPONSE))),'\n']);
 
 %% Fit
 
