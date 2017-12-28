@@ -358,12 +358,12 @@ subjid = repmat((1:numPatients)',4,1);
 
 y = nanmean([Sacc_ON(:,1:2);Sacc_OFF(:,1:2);Sacc_OFF_ONl(:,1:2);Sacc_ON_ONl(:,1:2)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_prosaccadeLatency1 = fitglme(tbl,formula);%
-formula = 'y ~ 1 + dbs + ldopa+(dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_prosaccadeLatency2 = fitglme(tbl,formula);%
+% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_prosaccadeLatency1 = fitglme(tbl,formula);%
+% formula = 'y ~ 1 + dbs + ldopa+(dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_prosaccadeLatency2 = fitglme(tbl,formula);%
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_prosaccadeLatency3 = fitglme(tbl,formula);%
+glme_prosaccadeLatency3 = fitglme(tbl,formula,'Distribution','Normal','FitMethod','MPL');%
 
 y = nanmean([Sacc_ON(:,9:10);Sacc_OFF(:,9:10);Sacc_OFF_ONl(:,9:10);Sacc_ON_ONl(:,9:10)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
@@ -372,25 +372,25 @@ glme_antisaccadeError1 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
 glme_antisaccadeError2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeError3 = fitglme(tbl,formula);%,'Distribution','Gamma'
+glme_antisaccadeError3 = fitglme(tbl,formula,'Distribution','Normal','FitMethod','MPL');%
 
 y = nanmean([Sacc_ON(:,11:12);Sacc_OFF(:,11:12);Sacc_OFF_ONl(:,11:12);Sacc_ON_ONl(:,11:12)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyCorr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
-formula = 'y ~ 1 + dbs + ldopa + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyCorr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
+% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_antisaccadeLatencyCorr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
+% formula = 'y ~ 1 + dbs + ldopa + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_antisaccadeLatencyCorr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyCorr3 = fitglme(tbl,formula);%,'Distribution','Gamma'
+glme_antisaccadeLatencyCorr3 = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
 
 y = nanmean([Sacc_ON(:,13:14);Sacc_OFF(:,13:14);Sacc_OFF_ONl(:,13:14);Sacc_ON_ONl(:,13:14)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyErr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
-formula = 'y ~ 1 + dbs + ldopa + (dbs:ldopa)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyErr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
+% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_antisaccadeLatencyErr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
+% formula = 'y ~ 1 + dbs + ldopa + (dbs:ldopa)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
+% glme_antisaccadeLatencyErr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyErr3 = fitglme(tbl,formula);%,'Distribution','Gamma'
+glme_antisaccadeLatencyErr3 = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
 
 
 

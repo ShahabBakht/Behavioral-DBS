@@ -1,19 +1,19 @@
-function reciprobitplot(LATENCY)
+function reciprobitplot(LATENCY,color)
 
 rt = LATENCY * 1000;
 rtinv = 1./rt;
 x = sort(1000*rtinv);
 n = numel(rtinv); % number of data points
 y = 100*(1:n)./n; % cumulative probability for every data point
-figure(3)
-plot(x,y,'k.');
-hold on
 
-% Now, plot it cumulative probability in quantiles
-% this is easier to compare between different distributions
+% plot(x,y,'k.');
+% hold on
+% 
+% % Now, plot it cumulative probability in quantiles
+% % this is easier to compare between different distributions
 p    = [1 2 5 10:10:90 95 98 99]/100; % some arbitrary probabilities
 q    = quantile(rtinv,p); % instead of hist, let's use quantiles
- 
+%  
 h = plot(q*1000,p*100,'ko','LineWidth',2,'MarkerFaceColor','r');
 hold on
 xlabel('Promptness (s^{-1})');
@@ -28,7 +28,7 @@ myerf       = 2*cdf - 1;
 myerfinv    = sqrt(2)*erfinv(myerf);
 chi         = myerfinv;
 
-figure(4)
+
 % raw data
 x = -1./sort((rt)); % multiply by -1 to mirror abscissa
 n = numel(rtinv); % number of data points
@@ -43,7 +43,7 @@ q    = quantile(rt,p);
 q    = -1./q;
 xtick  = sort(-1./(150+[0 pa_oct2bw(50,-1:5)])); % some arbitrary xticks
  
-plot(q,probit,'ko','Color','k','MarkerFaceColor','r','LineWidth',2);
+plot(q,probit,'ko','Color','k','MarkerFaceColor',color,'LineWidth',2);
 hold on
 set(gca,'XTick',xtick,'XTickLabel',-1./xtick);
 xlim([min(xtick) max(xtick)]);
