@@ -2,13 +2,15 @@ clear all;clc;close all;
 
 %% real data
 PatientsList = {'Lyne LaSalle','Raymond Eastcott','Robert Delage', 'Jean L_Heureux','Sylvie Duval','Clement Rose', 'Yves Lecours','Joanne Vermette','Abdelnour Saichi','Richard Goulet'};
-whichOne = 10;
+whichOne = 1;
 PatientName = PatientsList{whichOne};
 FileName = [PatientName,' _ Preprocessed _ all cond.mat'];
-load(['D:\Analysis\Behavioral-STN-DBS\Eye\Antisaccade - temp\',FileName]);
-LATENCYemp_OFFmOFFs = asResult_ONmOFFs.LATENCY(1,:)'/1000;
-LATENCYemp_OFFmONs = asResult_ONmONs.LATENCY(1,:)'/1000;
-figure;reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
+load(['/Users/shahab/MNI/Analysis/Behavioral-STN-DBS/Eye/Prosaccade - temp/',FileName]);
+% LATENCYemp_OFFmOFFs = asResult_ONmOFFs.LATENCY(:)'/1000;
+% LATENCYemp_OFFmONs = asResult_ONmONs.LATENCY(:)'/1000;
+LATENCYemp_OFFmOFFs = psResult_pre_ONmOFFs.LATENCY(:)'/1000;
+LATENCYemp_OFFmONs = psResult_pre_ONmONs.LATENCY(:)'/1000;
+figure(1);reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
 
 %% Fit
 tic;
