@@ -19,16 +19,16 @@ fprintf('fitting OFF stim \n ---------------- \n')
 param.deltamu = 10;
 param.deltaother = 1;
 param.step = 1;
-% param.mu_pro = 5:15;
-% param.mu_anti = 5:15;
-param.mu = 5:15;
+param.mu_pro = 9:15;
+param.mu_anti = 9:15;
+% param.mu = 5:15;
 param.mu_stop = 10:20;
 param.theta = 1:3;
 param.sigma = 2:4;
 initParam{whichOne,1} = param;
 numIter = 10;
-% [theta_hat_OFF,mu_pro_hat_OFF,mu_anti_hat_OFF,mu_stop_hat_OFF,sigma_hat_OFF,minval_OFF] = fitDatatoLATERgrid(LATENCYemp_OFFmOFFs,param,numIter);
-[theta_hat_OFF,mu_hat_OFF,mu_stop_hat_OFF,sigma_hat_OFF,minval_OFF] = fitDatatoLATERgrid(LATENCYemp_OFFmOFFs,param,numIter);
+[theta_hat_OFF,mu_pro_hat_OFF,mu_anti_hat_OFF,mu_stop_hat_OFF,sigma_hat_OFF,minval_OFF] = fitDatatoLATERgrid(LATENCYemp_OFFmOFFs,param,numIter);
+% [theta_hat_OFF,mu_hat_OFF,mu_stop_hat_OFF,sigma_hat_OFF,minval_OFF] = fitDatatoLATERgrid(LATENCYemp_OFFmOFFs,param,numIter);
 toc;
 
 tic;
