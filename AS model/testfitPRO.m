@@ -5,12 +5,12 @@ PatientsList = {'Lyne LaSalle','Raymond Eastcott','Robert Delage', 'Jean L_Heure
 whichOne = 1;
 PatientName = PatientsList{whichOne};
 FileName = [PatientName,' _ Preprocessed _ all cond.mat'];
-load(['/Users/shahab/MNI/Analysis/Behavioral-STN-DBS/Eye/Prosaccade - temp/',FileName]);
+load(['D:\Analysis/Behavioral-STN-DBS/Eye/Prosaccade - temp/',FileName]);
 LATENCYemp_OFFmOFFs = psResult_pre_ONmOFFs.LATENCY(:)'/1000;
 LATENCYemp_OFFmONs = psResult_pre_ONmONs.LATENCY(:)'/1000;
-figure(1);reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
+figure(2);reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
 
-%% Fit
+%% Fit OFF DBS
 tic;
 fprintf('fitting OFF stim \n ---------------- \n')
 param.deltamu = 10;
@@ -24,11 +24,13 @@ numIter = 10;
 [theta_hat_OFF,mu_hat_OFF,sigma_hat_OFF,minval_OFF] = fitDatatoProLATERgrid(LATENCYemp_OFFmOFFs,param,numIter);
 toc;
 
+%% ON DBS
 tic;
 fprintf('fitting ON stim \n ---------------- \n')
-param.deltamu = 10;
+param.deltamu = 0;
+param.deltaother = 1;
 param.step = 1;
-param.mu = 5:15;
+param.mu = mu_hat_OFF;
 param.theta = 1:3;
 param.sigma = 2:4;
 initParam{whichOne,1} = param;

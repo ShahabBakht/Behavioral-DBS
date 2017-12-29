@@ -14,7 +14,7 @@ y = 100*(1:n)./n; % cumulative probability for every data point
 p    = [1 2 5 10:10:90 95 98 99]/100; % some arbitrary probabilities
 q    = quantile(rtinv,p); % instead of hist, let's use quantiles
 %  
-h = plot(q*1000,p*100,'ko','LineWidth',2,'MarkerFaceColor','r');
+% h = plot(q*1000,p*100,'ko','LineWidth',2,'MarkerFaceColor','r');
 hold on
 xlabel('Promptness (s^{-1})');
 ylabel('Cumulative probability (%)');
@@ -33,7 +33,7 @@ chi         = myerfinv;
 x = -1./sort((rt)); % multiply by -1 to mirror abscissa
 n = numel(rtinv); % number of data points
 y = pa_probit((1:n)./n); % cumulative probability for every data point converted to probit scale
-plot(x,y,'k.');
+plot(x,y,'.','MarkerFaceColor',color);
 hold on
  
 % quantiles
@@ -43,7 +43,7 @@ q    = quantile(rt,p);
 q    = -1./q;
 xtick  = sort(-1./(150+[0 pa_oct2bw(50,-1:5)])); % some arbitrary xticks
  
-plot(q,probit,'ko','Color','k','MarkerFaceColor',color,'LineWidth',2);
+% plot(q,probit,'ko','Color','k','MarkerFaceColor',color,'LineWidth',2);
 hold on
 set(gca,'XTick',xtick,'XTickLabel',-1./xtick);
 xlim([min(xtick) max(xtick)]);

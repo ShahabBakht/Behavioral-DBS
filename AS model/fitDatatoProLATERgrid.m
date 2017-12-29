@@ -3,14 +3,15 @@ function [theta_hat,mu_hat,sigma_hat,minval] = fitDatatoProLATERgrid(LATENCYemp,
 deltamu = param.deltamu;
 deltaother = param.deltaother;
 step = param.step;
-figure;
+% figure;
 for iter = 1:numIter
     fprintf(['iteration = ',num2str(iter),' ... '])
     [theta_hatloc,mu_hatloc,sigma_hatloc,minvalloc] = fitLocalDatatoLATERgrid(LATENCYemp,param);
     param.mu = (mu_hatloc - deltamu*2^(-iter)):(step*2^(-iter)):(mu_hatloc + deltamu*2^(-iter));
     param.theta = (theta_hatloc - deltaother*2^(-iter)):(step*2^(-iter)):(theta_hatloc + deltaother*2^(-iter));
     param.sigma = (sigma_hatloc - deltaother*2^(-iter)):(step*2^(-iter)):(sigma_hatloc + deltaother*2^(-iter));
-    fprintf(['minval = ',num2str(minvalloc),'\n']);plot(iter,minvalloc,'ok');pause(.3);hold on
+    fprintf(['minval = ',num2str(minvalloc),'\n']);
+%     plot(iter,minvalloc,'ok');pause(.3);hold on
     
 end
 theta_hat = theta_hatloc;

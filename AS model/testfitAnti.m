@@ -5,12 +5,13 @@ PatientsList = {'Lyne LaSalle','Raymond Eastcott','Robert Delage', 'Jean L_Heure
 whichOne = 1;
 PatientName = PatientsList{whichOne};
 FileName = [PatientName,' _ Preprocessed _ all cond.mat'];
-load(['/Users/shahab/MNI/Analysis/Behavioral-STN-DBS/Eye/Prosaccade - temp/',FileName]);
-% LATENCYemp_OFFmOFFs = asResult_ONmOFFs.LATENCY(:)'/1000;
-% LATENCYemp_OFFmONs = asResult_ONmONs.LATENCY(:)'/1000;
-LATENCYemp_OFFmOFFs = psResult_pre_ONmOFFs.LATENCY(:)'/1000;
-LATENCYemp_OFFmONs = psResult_pre_ONmONs.LATENCY(:)'/1000;
-figure(1);reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
+load(['D:\Analysis/Behavioral-STN-DBS/Eye/Antisaccade - temp/',FileName]);
+LATENCYemp_OFFmOFFs = asResult_OFFmOFFs.LATENCY(:)'/1000;
+LATENCYemp_OFFmONs = asResult_OFFmONs.LATENCY(:)'/1000;
+fprintf(['Error rate DBS OFF = ',num2str(nanmean(asResult_OFFmOFFs.ERROR(:))),'\n'])
+fprintf(['Error rate DBS ON = ',num2str(nanmean(asResult_OFFmONs.ERROR(:))),'\n'])
+
+figure(5);reciprobitplot(LATENCYemp_OFFmOFFs,'b');hold on;reciprobitplot(LATENCYemp_OFFmONs,'r');
 
 %% Fit
 tic;

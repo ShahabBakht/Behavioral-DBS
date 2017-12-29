@@ -1,12 +1,12 @@
 % modify the model to simulate the trials in batch format not sequntial
 function [LATENCY, RESPONSE] = simulateAntiSaccade(param,numTrials)
 
-% mu_pro = param.mu_pro;%12.64;
-mu_pro = param.mu;%12.64;
+mu_pro = param.mu_pro;%12.64;
+% mu_pro = param.mu;%12.64;
 sigma_pro = param.sigma_pro;%2.11;
 
-% mu_anti = param.mu_anti;%12.64;
-mu_anti = param.mu;%12.64;
+mu_anti = param.mu_anti;%12.64;
+% mu_anti = param.mu;%12.64;
 sigma_anti = param.sigma_anti;%2.11;
 
 delay_anti = param.delay_anti;%0.05;
