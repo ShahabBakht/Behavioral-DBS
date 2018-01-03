@@ -1,8 +1,30 @@
-PatientsList = {'Lyne LaSalle','Raymond Eastcott','Robert Delage', 'Jean L_Heureux','Sylvie Duval','Clement Rose', 'Yves Lecours','Joanne Vermette','Abdelnour Saichi','Richard Goulet'};
-PatientsInit = {'LL','RE','RD','JL','SD','CR','YL','JV','AS','RG'};
-numPatients = length(PatientsInit);
-ProsaccadeFolder = 'D:\Analysis\Behavioral-STN-DBS\Eye\Prosaccade - temp\';
-AntisaccadeFolder = 'D:\Analysis\Behavioral-STN-DBS\Eye\Antisaccade - temp\';
+function statResults = init_SaccStats()
+
+global numPatients
+addpath('D:\Project Codes\Tools\ploterr\');
+
+PatientInfo.PatientsList = {'Lyne LaSalle','Raymond Eastcott','Robert Delage', 'Jean L_Heureux','Sylvie Duval','Clement Rose', 'Yves Lecours','Joanne Vermette','Abdelnour Saichi','Richard Goulet'};
+PatientInfo.PatientsInit = {'LL','RE','RD','JL','SD','CR','YL','JV','AS','RG'};
+numPatients = length(PatientInfo.PatientsList);
+PatientInfo.ProsaccadeFolder = 'D:\Analysis\Behavioral-STN-DBS\Eye\Prosaccade - temp\';
+PatientInfo.AntisaccadeFolder = 'D:\Analysis\Behavioral-STN-DBS\Eye\Antisaccade - temp\';
+[Sacc_OFF,Sacc_OFF_ONl,Sacc_ON,Sacc_ON_ONl] = ASPSstate(PatientInfo);
+plotSaccadesForAllCond(Sacc_ON,Sacc_OFF,Sacc_OFF_ONl,Sacc_ON_ONl);
+[PWglme_proSaccadeLatency,PWglme_antisaccadeLatencyCorr,PWglme_antisaccadeLatencyErr,PWglme_antisaccadeError] = doPairwiseComparison(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
+[ANOVAglme_prosaccadeLatency,ANOVAglme_antisaccadeError,ANOVAglme_antisaccadeLatencyCorr,ANOVAglme_antisaccadeLatencyErr] = ANOVAwithGLME(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
+
+statResults.Pairwise = {PWglme_proSaccadeLatency,PWglme_antisaccadeLatencyCorr,PWglme_antisaccadeLatencyErr,PWglme_antisaccadeError};
+statResults.ANOVA = {ANOVAglme_prosaccadeLatency,ANOVAglme_antisaccadeError,ANOVAglme_antisaccadeLatencyCorr,ANOVAglme_antisaccadeLatencyErr};
+
+end
+
+function [Sacc_OFF,Sacc_OFF_ONl,Sacc_ON,Sacc_ON_ONl] = ASPSstate(PatientInfo)
+
+global numPatients
+
+PatientsList = PatientInfo.PatientsList;
+ProsaccadeFolder = PatientInfo.ProsaccadeFolder;
+AntisaccadeFolder = PatientInfo.AntisaccadeFolder;
 
 for patientcount = 1:numPatients
     load([ProsaccadeFolder,PatientsList{patientcount},' _ Preprocessed _ all cond.mat']); 
@@ -75,18 +97,13 @@ for patientcount = 1:numPatients
     
 end
 
-allSacc = [Sacc_OFF;Sacc_ON];
-allSacc_norm = (allSacc - repmat(min(allSacc,[],1),(numPatients*2),1))./(repmat(max(allSacc,[],1),(numPatients*2),1) - repmat(min(allSacc,[],1),(numPatients * 2),1));
-Sacc_ON_norm = allSacc_norm((numPatients+1):(2*numPatients),:);
-Sacc_OFF_norm = allSacc_norm(1:numPatients,:);
 
-allSacc = [Sacc_OFF_ONl;Sacc_ON_ONl];
-allSacc_norm = (allSacc - repmat(min(allSacc,[],1),(numPatients*2),1))./(repmat(max(allSacc,[],1),(numPatients*2),1) - repmat(min(allSacc,[],1),(numPatients * 2),1));
-Sacc_ON_ONl_norm = allSacc_norm((numPatients+1):(2*numPatients),:);
-Sacc_OFF_ONl_norm = allSacc_norm(1:numPatients,:);
+end
 
 
-% 
+function plotSaccadesForAllCond(Sacc_ON,Sacc_OFF,Sacc_OFF_ONl,Sacc_ON_ONl)
+global numPatients
+[Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
 
 deltaSacc = Sacc_OFF_norm - Sacc_ON_norm;
 deltaSacc_ONl = Sacc_OFF_ONl_norm - Sacc_ON_ONl_norm;
@@ -120,17 +137,17 @@ figure(3);set(gca,'YLim',[-1,1],'XTick',[1:10],...
 
 
 % AS error rate OFF dbs - ON dbs
-figure(4);hold on;
-plot([1,2],deltaSacc(:,9:10)','.','MarkerSize',30,'MarkerFaceColor','auto','Color',[0.5,0.5,0.7]);
-plot([1,2],nanmean(deltaSacc(:,9:10),1),'db','MarkerSize',20);
-plot([4,5],deltaSacc_ONl(:,9:10)','.','MarkerSize',30,'Color',[0.7,0.5,0.5]);
-plot([4,5],nanmean(deltaSacc_ONl(:,9:10),1),'dr','MarkerSize',20);
-plot(0:0.001:6,zeros(1,length(0:0.001:6)),'--');
-set(gca,'XLim',[0.5,5.5],'XTick',[1,2,4,5],'XTickLabel',{'Right','Left','Right','Left'},'Fontsize',15,'FontSmoothing','on');
-box off; grid on; grid minor;
-ylabel('(Error Rate)_{OFF} - (Error Rate)_{ON}')
+% figure(4);hold on;
+% plot([1,2],deltaSacc(:,9:10)','.','MarkerSize',30,'MarkerFaceColor','auto','Color',[0.5,0.5,0.7]);
+% plot([1,2],nanmean(deltaSacc(:,9:10),1),'db','MarkerSize',20);
+% plot([4,5],deltaSacc_ONl(:,9:10)','.','MarkerSize',30,'Color',[0.7,0.5,0.5]);
+% plot([4,5],nanmean(deltaSacc_ONl(:,9:10),1),'dr','MarkerSize',20);
+% plot(0:0.001:6,zeros(1,length(0:0.001:6)),'--');
+% set(gca,'XLim',[0.5,5.5],'XTick',[1,2,4,5],'XTickLabel',{'Right','Left','Right','Left'},'Fontsize',15,'FontSmoothing','on');
+% box off; grid on; grid minor;
+% ylabel('(Error Rate)_{OFF} - (Error Rate)_{ON}')
 
-%% plot all blocks side by side
+% plot all blocks side by side
 % pro-saccade latency
 prosaccadeLatency_ONsOFFm = nanmean(Sacc_ON(:,[1:2,5:6]),2);
 prosaccadeLatency_OFFsOFFm = nanmean(Sacc_OFF(:,[1:2,5:6]),2);
@@ -241,114 +258,99 @@ set(gca,'XTick',[1,2,3,4],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldop
 'FontSize',10);
 ylabel('anti-saccade error rate')
 
+end
 
-%% STATISTICS
+function [Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
+global numPatients
+allSacc = [Sacc_OFF;Sacc_ON];
+allSacc_norm = (allSacc - repmat(min(allSacc,[],1),(numPatients*2),1))./(repmat(max(allSacc,[],1),(numPatients*2),1) - repmat(min(allSacc,[],1),(numPatients * 2),1));
+Sacc_ON_norm = allSacc_norm((numPatients+1):(2*numPatients),:);
+Sacc_OFF_norm = allSacc_norm(1:numPatients,:);
 
+allSacc = [Sacc_OFF_ONl;Sacc_ON_ONl];
+allSacc_norm = (allSacc - repmat(min(allSacc,[],1),(numPatients*2),1))./(repmat(max(allSacc,[],1),(numPatients*2),1) - repmat(min(allSacc,[],1),(numPatients * 2),1));
+Sacc_ON_ONl_norm = allSacc_norm((numPatients+1):(2*numPatients),:);
+Sacc_OFF_ONl_norm = allSacc_norm(1:numPatients,:);
+
+
+end
+
+function [glme_proSaccadeLatency,glme_antisaccadeLatencyCorr,glme_antisaccadeLatencyErr,glme_antisaccadeError] = doPairwiseComparison(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
+% pro-saccade Latency
+Sacc1 = nanmean(Sacc_ON(:,1:2),2);
+Sacc2 = nanmean(Sacc_OFF(:,1:2),2);
+glme_proSaccadeLatency.glme1to2 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF(:,1:2),2);
+Sacc2 = nanmean(Sacc_OFF_ONl(:,1:2),2);
+glme_proSaccadeLatency.glme2to3 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF_ONl(:,1:2),2);
+Sacc2 = nanmean(Sacc_ON_ONl(:,1:2),2);
+glme_proSaccadeLatency.glme3to4 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_ON_ONl(:,1:2),2);
+Sacc2 = nanmean(Sacc_ON(:,1:2),2);
+glme_proSaccadeLatency.glme4to1 = PairwiseComparison(Sacc1,Sacc2);
+
+% anti-saccade correct Latency
+Sacc1 = nanmean(Sacc_ON(:,11:12),2);
+Sacc2 = nanmean(Sacc_OFF(:,11:12),2);
+glme_antisaccadeLatencyCorr.glme1to2 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF(:,11:12),2);
+Sacc2 = nanmean(Sacc_OFF_ONl(:,11:12),2);
+glme_antisaccadeLatencyCorr.glme2to3 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF_ONl(:,11:12),2);
+Sacc2 = nanmean(Sacc_ON_ONl(:,11:12),2);
+glme_antisaccadeLatencyCorr.glme3to4 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_ON_ONl(:,11:12),2);
+Sacc2 = nanmean(Sacc_ON(:,11:12),2);
+glme_antisaccadeLatencyCorr.glme4to1 = PairwiseComparison(Sacc1,Sacc2);
+
+% anti-saccade error Latency
+Sacc1 = nanmean(Sacc_ON(:,13:14),2);
+Sacc2 = nanmean(Sacc_OFF(:,13:14),2);
+glme_antisaccadeLatencyErr.glme1to2 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF(:,13:14),2);
+Sacc2 = nanmean(Sacc_OFF_ONl(:,13:14),2);
+glme_antisaccadeLatencyErr.glme2to3 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF_ONl(:,13:14),2);
+Sacc2 = nanmean(Sacc_ON_ONl(:,13:14),2);
+glme_antisaccadeLatencyErr.glme3to4 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_ON_ONl(:,13:14),2);
+Sacc2 = nanmean(Sacc_ON(:,13:14),2);
+glme_antisaccadeLatencyErr.glme4to1 = PairwiseComparison(Sacc1,Sacc2);
+
+% anti-saccade error rate
+Sacc1 = nanmean(Sacc_ON(:,9:10),2);
+Sacc2 = nanmean(Sacc_OFF(:,9:10),2);
+glme_antisaccadeError.glme1to2 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF(:,9:10),2);
+Sacc2 = nanmean(Sacc_OFF_ONl(:,9:10),2);
+glme_antisaccadeError.glme2to3 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_OFF_ONl(:,9:10),2);
+Sacc2 = nanmean(Sacc_ON_ONl(:,9:10),2);
+glme_antisaccadeError.glme3to4 = PairwiseComparison(Sacc1,Sacc2);
+Sacc1 = nanmean(Sacc_ON_ONl(:,9:10),2);
+Sacc2 = nanmean(Sacc_ON(:,9:10),2);
+glme_antisaccadeError.glme4to1 = PairwiseComparison(Sacc1,Sacc2);
+
+
+end
+
+function glme = PairwiseComparison(Sacc1,Sacc2)
+global numPatients
 addpath('D:\Project Codes\Tools\ploterr\')
 
-%%% pairwise comparisons
-% pro-saccade Latency
 subjid = repmat((1:numPatients)',2,1);
 formula = 'y ~ 1 + factorToChange + (factorToChange|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-y = nanmean([Sacc_ON(:,1:2);Sacc_OFF(:,1:2)],2);
+y = [Sacc1;Sacc2];
 factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
 tbl = table(y,factorToChange,subjid);
-glme_prosaccadeLatency1To2 = fitglme(tbl,formula);%
+glme = fitglme(tbl,formula);%
 
-y = nanmean([Sacc_OFF(:,1:2);Sacc_OFF_ONl(:,1:2)],2);
-factorToChange = [zeros(numPatients,1);ones(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_prosaccadeLatency2To3 = fitglme(tbl,formula);%
+end
 
-y = nanmean([Sacc_OFF_ONl(:,1:2);Sacc_ON_ONl(:,1:2)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_prosaccadeLatency3To4 = fitglme(tbl,formula);%
+function [glme_prosaccadeLatency,glme_antisaccadeError,glme_antisaccadeLatencyCorr,glme_antisaccadeLatencyErr] = ANOVAwithGLME(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
 
-y = nanmean([Sacc_ON_ONl(:,1:2);Sacc_ON(:,1:2)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_prosaccadeLatency4To1 = fitglme(tbl,formula);%
-
-% anti-saccade correct latency
-subjid = repmat((1:numPatients)',2,1);
-formula = 'y ~ 1 + factorToChange + (factorToChange|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-y = nanmean([Sacc_ON(:,11:12);Sacc_OFF(:,11:12)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyCorr1To2 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF(:,11:12);Sacc_OFF_ONl(:,11:12)],2);
-factorToChange = [zeros(numPatients,1);ones(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyCorr2To3 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF_ONl(:,11:12);Sacc_ON_ONl(:,11:12)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyCorr3To4 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_ON_ONl(:,11:12);Sacc_ON(:,11:12)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyCorr4To1 = fitglme(tbl,formula);%
-
-
-% anti-saccade error latency
-subjid = repmat((1:numPatients)',2,1);
-formula = 'y ~ 1 + factorToChange + (factorToChange|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-y = nanmean([Sacc_ON(:,13:14);Sacc_OFF(:,13:14)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyErr1To2 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF(:,13:14);Sacc_OFF_ONl(:,13:14)],2);
-factorToChange = [zeros(numPatients,1);ones(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyErr2To3 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF_ONl(:,13:14);Sacc_ON_ONl(:,13:14)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyErr3To4 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_ON_ONl(:,13:14);Sacc_ON(:,13:14)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeLatencyErr4To1 = fitglme(tbl,formula);%
-
-
-% anti-saccade error 
-subjid = repmat((1:numPatients)',2,1);
-formula = 'y ~ 1 + factorToChange + (factorToChange|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-y = nanmean([Sacc_ON(:,9:10);Sacc_OFF(:,9:10)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeError1To2 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF(:,9:10);Sacc_OFF_ONl(:,9:10)],2);
-factorToChange = [zeros(numPatients,1);ones(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeError2To3 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_OFF_ONl(:,9:10);Sacc_ON_ONl(:,9:10)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeError3To4 = fitglme(tbl,formula);%
-
-y = nanmean([Sacc_ON_ONl(:,9:10);Sacc_ON(:,9:10)],2);
-factorToChange = [ones(numPatients,1);zeros(numPatients,1)];
-tbl = table(y,factorToChange,subjid);
-glme_antisaccadeError4To1 = fitglme(tbl,formula);%
-
-
-%% mixed effect generalized linear model 
-
-
-k = 0;
-figure(7);figure(8);
-TITLE = {'PS latency R','PS latency L', 'AS error rate R', 'AS error rate L'};
-
+global numPatients
 
 x1 = [0 1 0];x2 = [1 0 0]; x3 = [2 0 1]; x4 = [3 1 1];
 time = [repmat(x1(1),numPatients,1);repmat(x2(1),numPatients,1);repmat(x3(1),numPatients,1);repmat(x4(1),numPatients,1)];
@@ -358,54 +360,49 @@ subjid = repmat((1:numPatients)',4,1);
 
 y = nanmean([Sacc_ON(:,1:2);Sacc_OFF(:,1:2);Sacc_OFF_ONl(:,1:2);Sacc_ON_ONl(:,1:2)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_prosaccadeLatency1 = fitglme(tbl,formula);%
-% formula = 'y ~ 1 + dbs + ldopa+(dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_prosaccadeLatency2 = fitglme(tbl,formula);%
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_prosaccadeLatency3 = fitglme(tbl,formula,'Distribution','Normal','FitMethod','MPL');%
+glme_prosaccadeLatency = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%
 
 y = nanmean([Sacc_ON(:,9:10);Sacc_OFF(:,9:10);Sacc_OFF_ONl(:,9:10);Sacc_ON_ONl(:,9:10)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeError1 = fitglme(tbl,formula);%,'Distribution','Gamma'
-formula = 'y ~ 1 + dbs + ldopa + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeError2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeError3 = fitglme(tbl,formula,'Distribution','Normal','FitMethod','MPL');%
+glme_antisaccadeError = fitglme(tbl,formula,'Distribution','Normal','FitMethod','MPL');%
 
 y = nanmean([Sacc_ON(:,11:12);Sacc_OFF(:,11:12);Sacc_OFF_ONl(:,11:12);Sacc_ON_ONl(:,11:12)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_antisaccadeLatencyCorr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
-% formula = 'y ~ 1 + dbs + ldopa + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_antisaccadeLatencyCorr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyCorr3 = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
+glme_antisaccadeLatencyCorr = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
 
 y = nanmean([Sacc_ON(:,13:14);Sacc_OFF(:,13:14);Sacc_OFF_ONl(:,13:14);Sacc_ON_ONl(:,13:14)],2);
 tbl = table(y,time,dbs,ldopa,subjid);
-% formula = 'y ~ 1 + dbs + ldopa';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_antisaccadeLatencyErr1 = fitglme(tbl,formula);%,'Distribution','Gamma'
-% formula = 'y ~ 1 + dbs + ldopa + (dbs:ldopa)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-% glme_antisaccadeLatencyErr2 = fitglme(tbl,formula);%,'Distribution','Gamma'
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
-glme_antisaccadeLatencyErr3 = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
+glme_antisaccadeLatencyErr = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
 
 
 
-%% compare the effect of DBS on pro- and anti-saccade
+end
+
+
+
+function [corr1,corr2] = compareProAnti(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
+[Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
+
+deltaSacc = Sacc_OFF_norm - Sacc_ON_norm;
+deltaSacc_ONl = Sacc_OFF_ONl_norm - Sacc_ON_ONl_norm;
+deltaSacc_l = Sacc_OFF_norm - Sacc_OFF_ONl_norm;
+deltaSacc_ex = Sacc_OFF_norm - Sacc_ON_ONl_norm;
 
 for i = 1:numPatients
     figure(9);hold on;plot(deltaSacc_ONl(i,1),deltaSacc_ONl(i,10),'o');text(deltaSacc_ONl(i,1),deltaSacc_ONl(i,10),PatientsInit{i})
     figure(10);hold on;plot(deltaSacc_ONl(i,2),deltaSacc_ONl(i,9),'o');text(deltaSacc_ONl(i,2),deltaSacc_ONl(i,9),PatientsInit{i})
 end
 [corr1] = corrcoef(deltaSacc_ONl(:,1),deltaSacc_ONl(:,10));
-[corr1] = corrcoef(deltaSacc_ONl(:,2),deltaSacc_ONl(:,9));
+[corr2] = corrcoef(deltaSacc_ONl(:,2),deltaSacc_ONl(:,9));
 
 m = LinearModel.fit(deltaSacc_ONl(:,1),deltaSacc_ONl(:,10));
-figure(9);m.plot();title(['Saccade Latency(R) vs Antisaccade Error Rate(L) DBS effect  --  correlation = ',num2str(corr1(2))])
+figure;m.plot();title(['Saccade Latency(R) vs Antisaccade Error Rate(L) DBS effect  --  correlation = ',num2str(corr1(2))])
 m = LinearModel.fit(deltaSacc_ONl(:,2),deltaSacc_ONl(:,9));
-figure(10);m.plot();title(['Saccade Latency(L) vs Antisaccade Error Rate(R) DBS effect  --  correlation = ',num2str(corr2(2))])
+figure;m.plot();title(['Saccade Latency(L) vs Antisaccade Error Rate(R) DBS effect  --  correlation = ',num2str(corr2(2))])
 
 % clearvars -except Sacc_OFF Sacc_ON Sacc_OFF_norm Sacc_ON_norm Sacc_OFF_ONl Sacc_ON_ONl Sacc_OFF_ONl_norm Sacc_ON_ONl_norm
+end

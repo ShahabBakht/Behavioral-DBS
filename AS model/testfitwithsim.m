@@ -1,4 +1,6 @@
 clear all;clc;%close all;
+
+addpath(genpath('D:\Project Codes\Behavioral-DBS'));
 %% simulate AS
 param.mu_pro = 12;%12.64;
 param.sigma_pro = 4;%2.11;
