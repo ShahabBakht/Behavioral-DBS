@@ -1,12 +1,13 @@
 clear all;clc;%close all;
 
-addpath(genpath('D:\Project Codes\Behavioral-DBS'));
+addpath(genpath('/Users/shahab/MNI/Project Codes/Behavioral-DBS'));
 %% simulate AS
 param.mu_pro = 12;%12.64;
 param.sigma_pro = 4;%2.11;
 param.mu_anti = 12;%12.64;
 param.sigma_anti = 2;%2.11;
 param.delay_anti = 0.05;%0.05;
+param.delay = 0.05;
 param.mu_stop = 12;%17.5;
 param.sigma_stop = 2;%2.11;
 param.theta = 2;%10

@@ -5,10 +5,10 @@ mu = param.mu;
 sigma = param.sigma;
 
 theta = param.theta;
-
+delay = param.delay;
 
 r = normrnd(mu,sigma,numTrials,1);
-LATENCY = theta./r;
+LATENCY = theta./r + delay;
 
 
 

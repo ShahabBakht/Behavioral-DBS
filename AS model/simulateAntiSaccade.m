@@ -9,6 +9,7 @@ mu_anti = param.mu_anti;%12.64;
 % mu_anti = param.mu;%12.64;
 sigma_anti = param.sigma_anti;%2.11;
 
+delay = param.delay;
 delay_anti = param.delay_anti;%0.05;
 
 mu_stop = param.mu_stop;%17.5;
@@ -22,8 +23,8 @@ deltaT = 0.001;
 r_pro = normrnd(mu_pro,sigma_pro,numTrials,1);
 r_anti = normrnd(mu_anti,sigma_anti,numTrials,1);
 r_stop = normrnd(mu_stop,sigma_stop,numTrials,1);
-errorPro = ((theta./r_pro) ) <= ((theta./r_stop) + delay_anti);
-LATENCY = theta./r_anti + delay_anti;
+errorPro = ((theta./r_pro) +delay) <= ((theta./r_stop) + delay_anti + delay);
+LATENCY = theta./r_anti + delay_anti + delay;
 RESPONSE = ones(size(LATENCY));
 LATENCY(errorPro) = theta./r_pro(errorPro);
 RESPONSE(errorPro) = 0;
