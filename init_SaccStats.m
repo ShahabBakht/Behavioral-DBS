@@ -16,6 +16,9 @@ plotSaccadesForAllCond(Sacc_ON,Sacc_OFF,Sacc_OFF_ONl,Sacc_ON_ONl);
 statResults.Pairwise = {PWglme_proSaccadeLatency,PWglme_antisaccadeLatencyCorr,PWglme_antisaccadeLatencyErr,PWglme_antisaccadeError};
 statResults.ANOVA = {ANOVAglme_prosaccadeLatency,ANOVAglme_antisaccadeError,ANOVAglme_antisaccadeLatencyCorr,ANOVAglme_antisaccadeLatencyErr};
 
+[LM] = compareProAnti(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
+statResults.comparePSAS = LM;
+
 end
 
 function [Sacc_OFF,Sacc_OFF_ONl,Sacc_ON,Sacc_ON_ONl] = ASPSstate(PatientInfo)
@@ -139,6 +142,15 @@ figure(3);set(gca,'YLim',[-1,1],'XTick',[1:10],...
     'XTickLabelRotation',90,'FontSize',12);
 
 
+figure(4);
+lbwh = get(4, 'position');
+figw = lbwh(3);
+figh = lbwh(4);
+ncols = 2;
+nrows = 2;
+axisw = (1 / ncols) * 0.95;
+axish = (1 / nrows) * 0.95;
+
 % AS error rate OFF dbs - ON dbs
 % figure(4);hold on;
 % plot([1,2],deltaSacc(:,9:10)','.','MarkerSize',30,'MarkerFaceColor','auto','Color',[0.5,0.5,0.7]);
@@ -164,7 +176,8 @@ LY = [prosaccadeLatency_ONsOFFm_meanCI(1),prosaccadeLatency_OFFsOFFm_meanCI(1),p
 UY = [prosaccadeLatency_ONsOFFm_meanCI(2),prosaccadeLatency_OFFsOFFm_meanCI(2),prosaccadeLatency_OFFsONm_meanCI(2),prosaccadeLatency_ONsONm_meanCI(2)];
 STD = [nanstd(prosaccadeLatency_ONsOFFm,1),nanstd(prosaccadeLatency_OFFsOFFm,1),nanstd(prosaccadeLatency_OFFsONm,1),nanstd(prosaccadeLatency_ONsONm,1)];
 SEM = STD./sqrt(numPatients);
-figure;hold on
+figure(4);
+subplot(2,2,1);hold on;
 plot(nanmean([prosaccadeLatency_ONsOFFm,prosaccadeLatency_OFFsOFFm,prosaccadeLatency_OFFsONm,prosaccadeLatency_ONsONm],1),...
     'ok'),
 % plot(([prosaccadeLatency_ONsOFFm,prosaccadeLatency_OFFsOFFm,prosaccadeLatency_OFFsONm,prosaccadeLatency_ONsONm]'),...
@@ -174,10 +187,10 @@ plot(nanmean([prosaccadeLatency_ONsOFFm,prosaccadeLatency_OFFsOFFm,prosaccadeLat
 ploterr(1:4,nanmean([prosaccadeLatency_ONsOFFm,prosaccadeLatency_OFFsOFFm,prosaccadeLatency_OFFsONm,prosaccadeLatency_ONsONm],1),...
     [],SEM,'.k--')
 
-set(gca,'XTick',[1,2,3,4],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
+set(gca,'XTick',[1,2,3,4],'XLim',[0.5,4.5],'XTickLabel',{'','','',''},'XTickLabelRotation',0,...
 'FontSize',12);
 ylabel('pro-saccade latency')
-
+box off
 
 % correct anti-saccade latency
 antisaccadeLatency_ONsOFFm = nanmean(Sacc_ON(:,11:12),2);
@@ -192,7 +205,8 @@ LY = [antisaccadeLatency_ONsOFFm_meanCI(1),antisaccadeLatency_OFFsOFFm_meanCI(1)
 UY = [antisaccadeLatency_ONsOFFm_meanCI(2),antisaccadeLatency_OFFsOFFm_meanCI(2),antisaccadeLatency_OFFsONm_meanCI(2),antisaccadeLatency_ONsONm_meanCI(2)];
 STD = [nanstd(antisaccadeLatency_ONsOFFm,1),nanstd(antisaccadeLatency_OFFsOFFm,1),nanstd(antisaccadeLatency_OFFsONm,1),nanstd(antisaccadeLatency_ONsONm,1)];
 SEM = STD./sqrt(numPatients);
-figure;hold on
+figure(4);
+subplot(2,2,2);hold on
 plot(nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm],1),...
     'ok'),
 % plot(([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm]'),...
@@ -202,9 +216,10 @@ plot(nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccade
 ploterr(1:4,nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm],1),...
     [],SEM,'.k--')
 
-set(gca,'XTick',[1,2,3,4],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
+set(gca,'XTick',[1,2,3,4],'XLim',[0.5,4.5],'XTickLabel',{'','','',''},'XTickLabelRotation',0,...
 'FontSize',12);
 ylabel('correct anti-saccade latency')
+box off
 
 % error anti-saccade latency
 antisaccadeLatency_ONsOFFm = nanmean(Sacc_ON(:,13:14),2);
@@ -219,7 +234,8 @@ LY = [antisaccadeLatency_ONsOFFm_meanCI(1),antisaccadeLatency_OFFsOFFm_meanCI(1)
 UY = [antisaccadeLatency_ONsOFFm_meanCI(2),antisaccadeLatency_OFFsOFFm_meanCI(2),antisaccadeLatency_OFFsONm_meanCI(2),antisaccadeLatency_ONsONm_meanCI(2)];
 STD = [nanstd(antisaccadeLatency_ONsOFFm,1),nanstd(antisaccadeLatency_OFFsOFFm,1),nanstd(antisaccadeLatency_OFFsONm,1),nanstd(antisaccadeLatency_ONsONm,1)];
 SEM = STD./sqrt(numPatients);
-figure;hold on
+figure(4)
+subplot(2,2,3);hold on
 plot(nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm],1),...
     'ok'),
 % plot(([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm]'),...
@@ -229,9 +245,10 @@ plot(nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccade
 ploterr(1:4,nanmean([antisaccadeLatency_ONsOFFm,antisaccadeLatency_OFFsOFFm,antisaccadeLatency_OFFsONm,antisaccadeLatency_ONsONm],1),...
     [],SEM,'.k--')
 
-set(gca,'XTick',[1,2,3,4],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
+set(gca,'XTick',[1,2,3,4],'XLim',[0.5,4.5],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
 'FontSize',12);
 ylabel('error anti-saccade latency')
+box off
 
 
 % anti-saccade error rate
@@ -247,7 +264,8 @@ LY = [antisaccadeError_ONsOFFm_meanCI(1),antisaccadeError_OFFsOFFm_meanCI(1),ant
 UY = [antisaccadeError_ONsOFFm_meanCI(2),antisaccadeError_OFFsOFFm_meanCI(2),antisaccadeError_OFFsONm_meanCI(2),antisaccadeError_ONsONm_meanCI(2)];
 STD = [nanstd(antisaccadeError_ONsOFFm,1),nanstd(antisaccadeError_OFFsOFFm,1),nanstd(antisaccadeError_OFFsONm,1),nanstd(antisaccadeError_ONsONm,1)];
 SEM = STD./sqrt(numPatients);
-figure;hold on
+figure(4);
+subplot(2,2,4);hold on
 plot(nanmean([antisaccadeError_ONsOFFm,antisaccadeError_OFFsOFFm,antisaccadeError_OFFsONm,antisaccadeError_ONsONm],1),...
     'ok'),
 % plot(([antisaccadeError_ONsOFFm,antisaccadeError_OFFsOFFm,antisaccadeError_OFFsONm,antisaccadeError_ONsONm]'),...
@@ -257,10 +275,10 @@ plot(nanmean([antisaccadeError_ONsOFFm,antisaccadeError_OFFsOFFm,antisaccadeErro
 ploterr(1:4,nanmean([antisaccadeError_ONsOFFm,antisaccadeError_OFFsOFFm,antisaccadeError_OFFsONm,antisaccadeError_ONsONm],1),...
     [],SEM,'.k--')
 
-set(gca,'XTick',[1,2,3,4],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
+set(gca,'XTick',[1,2,3,4],'XLim',[0.5,4.5],'XTickLabel',{'ON DBS - OFF Ldopa','OFF DBS - OFF Ldopa','OFF DBS - ON Ldopa','ON DBS - ON Ldopa'},'XTickLabelRotation',90,...
 'FontSize',12);
 ylabel('anti-saccade error rate')
-
+box off
 end
 
 function [Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
@@ -381,35 +399,63 @@ tbl = table(y,time,dbs,ldopa,subjid);
 formula = 'y ~ 1 + dbs + ldopa+ (dbs:ldopa) + (dbs|subjid)+ (ldopa|subjid)';%'y ~ 1 + time + dbs + ldopa + (dbs|subjid)';%
 glme_antisaccadeLatencyErr = fitglme(tbl,formula,'Distribution','InverseGaussian','FitMethod','MPL');%,'Distribution','Gamma'
 
-
+DBSeffect = ([glme_antisaccadeLatencyErr.Coefficients.Estimate(2),glme_antisaccadeLatencyCorr.Coefficients.Estimate(2)])*1e5;
+DBSeffectSE = ([glme_antisaccadeLatencyErr.Coefficients.SE(2),glme_antisaccadeLatencyCorr.Coefficients.SE(2)])*1e5;
+LDOPAeffect =([glme_antisaccadeLatencyErr.Coefficients.Estimate(3),glme_antisaccadeLatencyCorr.Coefficients.Estimate(3)])*1e5;
+LDOPAeffectSE = ([glme_antisaccadeLatencyErr.Coefficients.SE(3),glme_antisaccadeLatencyCorr.Coefficients.SE(3)])*1e5;
+figure;
+subplot(1,2,1);plot(1:2,DBSeffect,'o-k');hold on;box off
+ploterr(1:2,DBSeffect,[],DBSeffectSE,'.k');
+plot(.5:0.0001:2.5,zeros(size(.5:0.0001:2.5)),'--','Color',[.7,0.7,0.7])
+ylabel('DBS EFFECT')
+set(gca,'XLim',[0.5,2.5],'YLim',[-0.2,0.5],'XTick',[1,2],'XTickLabel',{'pro-saccade','anti-saccade'},'XTickLabelRotation',90,'FontSize',15)
+subplot(1,2,2);plot(1:2,LDOPAeffect,'o-k');hold on;box off
+ploterr(1:2,LDOPAeffect,[],LDOPAeffectSE,'.k');
+plot(.5:0.0001:2.5,zeros(size(.5:0.0001:2.5)),'--','Color',[.7,0.7,0.7])
+ylabel('L-dopa EFFECT')
+set(gca,'XLim',[0.5,2.5],'YLim',[-0.5,0.2],'XTick',[1,2],'XTickLabel',{'pro-saccade','anti-saccade'},'XTickLabelRotation',90,'FontSize',15)
 
 end
 
 
 
-function [corr1,corr2] = compareProAnti(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
-[Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
+function [LM] = compareProAnti(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl)
+% [Sacc_OFF_norm,Sacc_ON_norm,Sacc_OFF_ONl_norm,Sacc_ON_ONl_norm] = normalizeSacc(Sacc_OFF,Sacc_ON,Sacc_OFF_ONl,Sacc_ON_ONl);
 
-deltaSacc = Sacc_OFF_norm - Sacc_ON_norm;
-deltaSacc_ONl = Sacc_OFF_ONl_norm - Sacc_ON_ONl_norm;
-deltaSacc_l = Sacc_OFF_norm - Sacc_OFF_ONl_norm;
-deltaSacc_ex = Sacc_OFF_norm - Sacc_ON_ONl_norm;
+deltaSacc = Sacc_OFF - Sacc_ON;
+deltaSacc_ONl = Sacc_OFF_ONl - Sacc_ON_ONl;
 
-for i = 1:numPatients
-    figure(9);hold on;plot(deltaSacc_ONl(i,1),deltaSacc_ONl(i,10),'o');text(deltaSacc_ONl(i,1),deltaSacc_ONl(i,10),PatientsInit{i})
-    figure(10);hold on;plot(deltaSacc_ONl(i,2),deltaSacc_ONl(i,9),'o');text(deltaSacc_ONl(i,2),deltaSacc_ONl(i,9),PatientsInit{i})
-end
-[corr1] = corrcoef(deltaSacc_ONl(:,1),deltaSacc_ONl(:,10));
-[corr2] = corrcoef(deltaSacc_ONl(:,2),deltaSacc_ONl(:,9));
+deltaProSaccInPS = nanmean(deltaSacc_ONl(:,5:6),2);
+deltaProSaccInAS = nanmean(deltaSacc_ONl(:,13:14),2);
+deltaAntiSaccInAS = nanmean(deltaSacc_ONl(:,11:12),2);
 
-m = LinearModel.fit(deltaSacc_ONl(:,1),deltaSacc_ONl(:,10));
-figure;m.plot();title(['Saccade Latency(R) vs Antisaccade Error Rate(L) DBS effect  --  correlation = ',num2str(corr1(2))])
-m = LinearModel.fit(deltaSacc_ONl(:,2),deltaSacc_ONl(:,9));
-figure;m.plot();title(['Saccade Latency(L) vs Antisaccade Error Rate(R) DBS effect  --  correlation = ',num2str(corr2(2))])
+figure;
+subplot(1,2,1);
+plot(deltaProSaccInPS,deltaProSaccInAS,'.','MarkerSize',30);hold on
+box off
+lm = LinearModel.fit(deltaProSaccInPS,deltaProSaccInAS);LM.PSvsPS = lm;
+xpredict = (min(deltaProSaccInPS):0.0001:max(deltaProSaccInPS))';
+ypredict = lm.predict(xpredict);
+plot(xpredict,ypredict,'-k','LineWidth',2.5)
+ylabel('{{\Delta}T_{p}}^{AS}');
+xlabel('{{\Delta}T_{p}}^{PS}');
+set(gca,'FontSize',14)
+
+subplot(1,2,2);
+plot(deltaProSaccInPS,deltaAntiSaccInAS,'.','MarkerSize',30);hold on
+box off
+lm = LinearModel.fit(deltaProSaccInPS,deltaAntiSaccInAS);LM.PSvsAS = lm;
+xpredict = (min(deltaProSaccInPS):0.0001:max(deltaProSaccInPS))';
+ypredict = lm.predict(xpredict);
+plot(xpredict,ypredict,'-k','LineWidth',2.5)
+ylabel('{{\Delta}T_{a}}^{AS}');
+xlabel('{{\Delta}T_{p}}^{PS}');
+set(gca,'FontSize',14)
 
 % clearvars -except Sacc_OFF Sacc_ON Sacc_OFF_norm Sacc_ON_norm Sacc_OFF_ONl Sacc_ON_ONl Sacc_OFF_ONl_norm Sacc_ON_ONl_norm
 end
 
 function saveGeneratedFigs()
+
 
 end
